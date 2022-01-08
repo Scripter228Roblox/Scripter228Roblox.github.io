@@ -1,0 +1,1084 @@
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local SberKonScriptGui = Instance.new("ScreenGui")
+local SberKonScript = Instance.new("Frame")
+local background_main = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local ClaimAllDispenser = Instance.new("TextButton")
+local UICorner_2 = Instance.new("UICorner")
+local SummonSprout = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
+local ReddemAllCodes = Instance.new("TextButton")
+local UICorner_4 = Instance.new("UICorner")
+local GingerbreadHouse = Instance.new("TextButton")
+local UICorner_5 = Instance.new("UICorner")
+local WealthClock = Instance.new("TextButton")
+local UICorner_6 = Instance.new("UICorner")
+local Honeystorm = Instance.new("TextButton")
+local UICorner_7 = Instance.new("UICorner")
+local UICorner_8 = Instance.new("UICorner")
+local TextLabel = Instance.new("TextLabel")
+local background_left_main = Instance.new("Frame")
+local UICorner_9 = Instance.new("UICorner")
+local Main = Instance.new("TextButton")
+local UICorner_10 = Instance.new("UICorner")
+local NectarInfo = Instance.new("TextButton")
+local UICorner_11 = Instance.new("UICorner")
+local TextLabel_2 = Instance.new("TextLabel")
+local TextLabel_3 = Instance.new("TextLabel")
+local Settings = Instance.new("TextButton")
+local UICorner_12 = Instance.new("UICorner")
+local Credit = Instance.new("TextButton")
+local UICorner_13 = Instance.new("UICorner")
+local background_nectarinfo = Instance.new("Frame")
+local UICorner_14 = Instance.new("UICorner")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local AllNectarInfo = Instance.new("Frame")
+local Refreshing = Instance.new("Frame")
+local UICorner_15 = Instance.new("UICorner")
+local ImageLabel = Instance.new("ImageLabel")
+local TextLabel_4 = Instance.new("TextLabel")
+local TextLabel_5 = Instance.new("TextLabel")
+local TextLabel_6 = Instance.new("TextLabel")
+local TextLabel_7 = Instance.new("TextLabel")
+local Comforting = Instance.new("Frame")
+local UICorner_16 = Instance.new("UICorner")
+local ImageLabel_2 = Instance.new("ImageLabel")
+local TextLabel_8 = Instance.new("TextLabel")
+local TextLabel_9 = Instance.new("TextLabel")
+local TextLabel_10 = Instance.new("TextLabel")
+local TextLabel_11 = Instance.new("TextLabel")
+local Motivating = Instance.new("Frame")
+local UICorner_17 = Instance.new("UICorner")
+local ImageLabel_3 = Instance.new("ImageLabel")
+local TextLabel_12 = Instance.new("TextLabel")
+local TextLabel_13 = Instance.new("TextLabel")
+local TextLabel_14 = Instance.new("TextLabel")
+local TextLabel_15 = Instance.new("TextLabel")
+local TextLabel_16 = Instance.new("TextLabel")
+local Invigorating = Instance.new("Frame")
+local UICorner_18 = Instance.new("UICorner")
+local ImageLabel_4 = Instance.new("ImageLabel")
+local TextLabel_17 = Instance.new("TextLabel")
+local TextLabel_18 = Instance.new("TextLabel")
+local TextLabel_19 = Instance.new("TextLabel")
+local TextLabel_20 = Instance.new("TextLabel")
+local TextLabel_21 = Instance.new("TextLabel")
+local Satisfying = Instance.new("Frame")
+local UICorner_19 = Instance.new("UICorner")
+local ImageLabel_5 = Instance.new("ImageLabel")
+local TextLabel_22 = Instance.new("TextLabel")
+local TextLabel_23 = Instance.new("TextLabel")
+local TextLabel_24 = Instance.new("TextLabel")
+local TextLabel_25 = Instance.new("TextLabel")
+local background_credit = Instance.new("Frame")
+local UICorner_20 = Instance.new("UICorner")
+local TextLabel_26 = Instance.new("TextLabel")
+local background_setting = Instance.new("Frame")
+local UICorner_21 = Instance.new("UICorner")
+local CheckBox = Instance.new("ImageButton")
+local UICorner_22 = Instance.new("UICorner")
+local TextLabel_27 = Instance.new("TextLabel")
+local TextLabel_28 = Instance.new("TextLabel")
+local Close_open = Instance.new("TextButton")
+local UICorner_23 = Instance.new("UICorner")
+
+--Properties:
+
+SberKonScriptGui.Name = "SberKonScriptGui"
+SberKonScriptGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+SberKonScript.Name = "SberKonScript"
+SberKonScript.Parent = SberKonScriptGui
+SberKonScript.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+SberKonScript.Position = UDim2.new(0.451387137, 0, 0.556810796, 0)
+SberKonScript.Size = UDim2.new(0, 518, 0, 267)
+
+background_main.Name = "background_main"
+background_main.Parent = SberKonScript
+background_main.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+background_main.Position = UDim2.new(0.200897351, 0, 0.204800844, 0)
+background_main.Size = UDim2.new(0, 400, 0, 190)
+
+UICorner.CornerRadius = UDim.new(0, 20)
+UICorner.Parent = background_main
+
+ClaimAllDispenser.Name = "ClaimAllDispenser"
+ClaimAllDispenser.Parent = background_main
+ClaimAllDispenser.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+ClaimAllDispenser.BorderSizePixel = 0
+ClaimAllDispenser.Position = UDim2.new(0.0321798734, 0, 0.116607346, 0)
+ClaimAllDispenser.Size = UDim2.new(0, 118, 0, 37)
+ClaimAllDispenser.Font = Enum.Font.Arial
+ClaimAllDispenser.Text = "Claim All Dispenser"
+ClaimAllDispenser.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClaimAllDispenser.TextSize = 14.000
+
+UICorner_2.CornerRadius = UDim.new(10, 10)
+UICorner_2.Parent = ClaimAllDispenser
+
+SummonSprout.Name = "Summon Sprout"
+SummonSprout.Parent = background_main
+SummonSprout.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+SummonSprout.BorderSizePixel = 0
+SummonSprout.Position = UDim2.new(0.35747543, 0, 0.391518533, 0)
+SummonSprout.Size = UDim2.new(0, 118, 0, 39)
+SummonSprout.Font = Enum.Font.Arial
+SummonSprout.Text = "Summon Sprout"
+SummonSprout.TextColor3 = Color3.fromRGB(255, 255, 255)
+SummonSprout.TextSize = 14.000
+
+UICorner_3.CornerRadius = UDim.new(10, 10)
+UICorner_3.Parent = SummonSprout
+
+ReddemAllCodes.Name = "ReddemAllCodes"
+ReddemAllCodes.Parent = background_main
+ReddemAllCodes.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+ReddemAllCodes.BorderSizePixel = 0
+ReddemAllCodes.Position = UDim2.new(0.357987821, 0, 0.111611463, 0)
+ReddemAllCodes.Size = UDim2.new(0, 118, 0, 37)
+ReddemAllCodes.Font = Enum.Font.Arial
+ReddemAllCodes.Text = "Reddem All Codes"
+ReddemAllCodes.TextColor3 = Color3.fromRGB(255, 255, 255)
+ReddemAllCodes.TextSize = 14.000
+
+UICorner_4.CornerRadius = UDim.new(10, 10)
+UICorner_4.Parent = ReddemAllCodes
+
+GingerbreadHouse.Name = "Gingerbread House"
+GingerbreadHouse.Parent = background_main
+GingerbreadHouse.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+GingerbreadHouse.BorderSizePixel = 0
+GingerbreadHouse.Position = UDim2.new(0.0304878354, 0, 0.395821989, 0)
+GingerbreadHouse.Size = UDim2.new(0, 118, 0, 37)
+GingerbreadHouse.Font = Enum.Font.Arial
+GingerbreadHouse.Text = "Gingerbread House"
+GingerbreadHouse.TextColor3 = Color3.fromRGB(255, 255, 255)
+GingerbreadHouse.TextSize = 14.000
+
+UICorner_5.CornerRadius = UDim.new(10, 10)
+UICorner_5.Parent = GingerbreadHouse
+
+WealthClock.Name = "Wealth Clock"
+WealthClock.Parent = background_main
+WealthClock.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+WealthClock.BorderSizePixel = 0
+WealthClock.Position = UDim2.new(0.667987823, 0, 0.111611456, 0)
+WealthClock.Size = UDim2.new(0, 118, 0, 37)
+WealthClock.Font = Enum.Font.Arial
+WealthClock.Text = "Wealth Clock"
+WealthClock.TextColor3 = Color3.fromRGB(255, 255, 255)
+WealthClock.TextSize = 14.000
+
+UICorner_6.CornerRadius = UDim.new(10, 10)
+UICorner_6.Parent = WealthClock
+
+Honeystorm.Name = "Honeystorm"
+Honeystorm.Parent = background_main
+Honeystorm.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+Honeystorm.BorderSizePixel = 0
+Honeystorm.Position = UDim2.new(0.667475462, 0, 0.396781683, 0)
+Honeystorm.Size = UDim2.new(0, 118, 0, 38)
+Honeystorm.Font = Enum.Font.Arial
+Honeystorm.Text = "Honeystorm"
+Honeystorm.TextColor3 = Color3.fromRGB(255, 255, 255)
+Honeystorm.TextSize = 14.000
+
+UICorner_7.CornerRadius = UDim.new(10, 10)
+UICorner_7.Parent = Honeystorm
+
+UICorner_8.CornerRadius = UDim.new(0, 15)
+UICorner_8.Parent = SberKonScript
+
+TextLabel.Parent = SberKonScript
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(0, 518, 0, 55)
+TextLabel.SizeConstraint = Enum.SizeConstraint.RelativeYY
+TextLabel.Font = Enum.Font.Arial
+TextLabel.Text = "SberKon Bee swarm Script"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 35.000
+TextLabel.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+
+background_left_main.Name = "background_left_main"
+background_left_main.Parent = SberKonScript
+background_left_main.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+background_left_main.Position = UDim2.new(0.0257561132, 0, 0.204800844, 0)
+background_left_main.Size = UDim2.new(0, 78, 0, 190)
+
+UICorner_9.CornerRadius = UDim.new(0, 20)
+UICorner_9.Parent = background_left_main
+
+Main.Name = "Main"
+Main.Parent = background_left_main
+Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Main.BackgroundTransparency = 1.000
+Main.Size = UDim2.new(0, 78, 0, 38)
+Main.Font = Enum.Font.Arial
+Main.Text = "Main"
+Main.TextColor3 = Color3.fromRGB(255, 255, 255)
+Main.TextSize = 14.000
+Main.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+
+UICorner_10.CornerRadius = UDim.new(0, 20)
+UICorner_10.Parent = Main
+
+NectarInfo.Name = "NectarInfo"
+NectarInfo.Parent = background_left_main
+NectarInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NectarInfo.BackgroundTransparency = 1.000
+NectarInfo.Position = UDim2.new(0, 0, 0.200000003, 0)
+NectarInfo.Size = UDim2.new(0, 78, 0, 38)
+NectarInfo.Font = Enum.Font.Arial
+NectarInfo.Text = "Nectar Info"
+NectarInfo.TextColor3 = Color3.fromRGB(86, 86, 86)
+NectarInfo.TextSize = 14.000
+NectarInfo.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+
+UICorner_11.CornerRadius = UDim.new(0, 20)
+UICorner_11.Parent = NectarInfo
+
+TextLabel_2.Parent = background_left_main
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.BackgroundTransparency = 1.000
+TextLabel_2.Position = UDim2.new(0, 0, 0.768421054, 0)
+TextLabel_2.Size = UDim2.new(0, 78, 0, 24)
+TextLabel_2.Font = Enum.Font.SourceSans
+TextLabel_2.Text = "Click G "
+TextLabel_2.TextColor3 = Color3.fromRGB(86, 86, 86)
+TextLabel_2.TextSize = 14.000
+
+TextLabel_3.Parent = background_left_main
+TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_3.BackgroundTransparency = 1.000
+TextLabel_3.Position = UDim2.new(0, 0, 0.83684212, 0)
+TextLabel_3.Size = UDim2.new(0, 78, 0, 24)
+TextLabel_3.Font = Enum.Font.SourceSans
+TextLabel_3.Text = "open/close"
+TextLabel_3.TextColor3 = Color3.fromRGB(86, 86, 86)
+TextLabel_3.TextSize = 14.000
+
+Settings.Name = "Settings"
+Settings.Parent = background_left_main
+Settings.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Settings.BackgroundTransparency = 1.000
+Settings.Position = UDim2.new(0, 0, 0.400000006, 0)
+Settings.Size = UDim2.new(0, 78, 0, 38)
+Settings.Font = Enum.Font.Arial
+Settings.Text = "Settings"
+Settings.TextColor3 = Color3.fromRGB(86, 86, 86)
+Settings.TextSize = 14.000
+Settings.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+
+UICorner_12.CornerRadius = UDim.new(0, 20)
+UICorner_12.Parent = Settings
+
+Credit.Name = "Credit"
+Credit.Parent = background_left_main
+Credit.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Credit.BackgroundTransparency = 1.000
+Credit.Position = UDim2.new(0, 0, 0.568421066, 0)
+Credit.Size = UDim2.new(0, 78, 0, 38)
+Credit.Font = Enum.Font.Arial
+Credit.Text = "Credit"
+Credit.TextColor3 = Color3.fromRGB(86, 86, 86)
+Credit.TextSize = 14.000
+Credit.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+
+UICorner_13.CornerRadius = UDim.new(0, 20)
+UICorner_13.Parent = Credit
+
+background_nectarinfo.Name = "background_nectarinfo"
+background_nectarinfo.Parent = SberKonScript
+background_nectarinfo.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+background_nectarinfo.ClipsDescendants = true
+background_nectarinfo.Position = UDim2.new(0.200897351, 0, 0.204800844, 0)
+background_nectarinfo.Size = UDim2.new(0, 400, 0, 190)
+background_nectarinfo.Visible = false
+
+UICorner_14.CornerRadius = UDim.new(0, 20)
+UICorner_14.Parent = background_nectarinfo
+
+ScrollingFrame.Parent = background_nectarinfo
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+ScrollingFrame.BackgroundTransparency = 1.000
+ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.Size = UDim2.new(0, 400, 0, 189)
+ScrollingFrame.BottomImage = "http://www.roblox.com/asset/?id=158362221"
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 450)
+ScrollingFrame.MidImage = "http://www.roblox.com/asset/?id=73024875"
+ScrollingFrame.ScrollBarThickness = 16
+ScrollingFrame.TopImage = "http://www.roblox.com/asset/?id=158362307"
+
+AllNectarInfo.Name = "AllNectarInfo"
+AllNectarInfo.Parent = ScrollingFrame
+AllNectarInfo.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+AllNectarInfo.BackgroundTransparency = 1.000
+AllNectarInfo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AllNectarInfo.BorderSizePixel = 0
+AllNectarInfo.Size = UDim2.new(1, 0, 0, 290)
+
+Refreshing.Name = "Refreshing"
+Refreshing.Parent = AllNectarInfo
+Refreshing.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Refreshing.Position = UDim2.new(0.024792064, 0, 0.325699538, 0)
+Refreshing.Size = UDim2.new(0, 372, 0, 80)
+
+UICorner_15.CornerRadius = UDim.new(0, 20)
+UICorner_15.Parent = Refreshing
+
+ImageLabel.Parent = Refreshing
+ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel.BackgroundTransparency = 1.000
+ImageLabel.Position = UDim2.new(0.0456989259, 0, 0.162499994, 0)
+ImageLabel.Size = UDim2.new(0, 59, 0, 54)
+ImageLabel.Image = "rbxassetid://8137318809"
+ImageLabel.ImageColor3 = Color3.fromRGB(85, 255, 127)
+
+TextLabel_4.Parent = Refreshing
+TextLabel_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_4.BackgroundTransparency = 1.000
+TextLabel_4.Position = UDim2.new(0.540322423, 0, 0.100000001, 0)
+TextLabel_4.Size = UDim2.new(0, 133, 0, 21)
+TextLabel_4.Font = Enum.Font.Arial
+TextLabel_4.Text = "Blue Flowers Field"
+TextLabel_4.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_4.TextSize = 14.000
+TextLabel_4.TextWrapped = true
+TextLabel_4.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_5.Parent = Refreshing
+TextLabel_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_5.BackgroundTransparency = 1.000
+TextLabel_5.Position = UDim2.new(0.540322423, 0, 0.362500012, 0)
+TextLabel_5.Size = UDim2.new(0, 96, 0, 21)
+TextLabel_5.Font = Enum.Font.Arial
+TextLabel_5.Text = "Strawberry Field"
+TextLabel_5.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_5.TextSize = 14.000
+TextLabel_5.TextWrapped = true
+TextLabel_5.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_6.Parent = Refreshing
+TextLabel_6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_6.BackgroundTransparency = 1.000
+TextLabel_6.Position = UDim2.new(0.540322423, 0, 0.625, 0)
+TextLabel_6.Size = UDim2.new(0, 82, 0, 21)
+TextLabel_6.Font = Enum.Font.Arial
+TextLabel_6.Text = "Coconut Field"
+TextLabel_6.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_6.TextSize = 14.000
+TextLabel_6.TextWrapped = true
+TextLabel_6.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_7.Parent = Refreshing
+TextLabel_7.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_7.BackgroundTransparency = 1.000
+TextLabel_7.Position = UDim2.new(0.241935477, 0, 0.0125000002, 0)
+TextLabel_7.Size = UDim2.new(0, 96, 0, 79)
+TextLabel_7.Font = Enum.Font.Arial
+TextLabel_7.Text = "Refreshing"
+TextLabel_7.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_7.TextSize = 21.000
+TextLabel_7.TextWrapped = true
+TextLabel_7.TextXAlignment = Enum.TextXAlignment.Left
+
+Comforting.Name = "Comforting"
+Comforting.Parent = AllNectarInfo
+Comforting.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Comforting.Position = UDim2.new(0.024792064, 0, 0.635988951, 0)
+Comforting.Size = UDim2.new(0, 372, 0, 80)
+
+UICorner_16.CornerRadius = UDim.new(0, 20)
+UICorner_16.Parent = Comforting
+
+ImageLabel_2.Parent = Comforting
+ImageLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel_2.BackgroundTransparency = 1.000
+ImageLabel_2.Position = UDim2.new(0.0456989259, 0, 0.162499994, 0)
+ImageLabel_2.Size = UDim2.new(0, 59, 0, 54)
+ImageLabel_2.Image = "rbxassetid://8137322789"
+ImageLabel_2.ImageColor3 = Color3.fromRGB(180, 225, 255)
+
+TextLabel_8.Parent = Comforting
+TextLabel_8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_8.BackgroundTransparency = 1.000
+TextLabel_8.Position = UDim2.new(0.241935477, 0, 0.0125000002, 0)
+TextLabel_8.Size = UDim2.new(0, 105, 0, 79)
+TextLabel_8.Font = Enum.Font.Arial
+TextLabel_8.Text = "Comforting"
+TextLabel_8.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_8.TextSize = 21.000
+TextLabel_8.TextWrapped = true
+TextLabel_8.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_9.Parent = Comforting
+TextLabel_9.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_9.BackgroundTransparency = 1.000
+TextLabel_9.Position = UDim2.new(0.540322542, 0, 0.112499997, 0)
+TextLabel_9.Size = UDim2.new(0, 90, 0, 21)
+TextLabel_9.Font = Enum.Font.Arial
+TextLabel_9.Text = "Dandelion Field"
+TextLabel_9.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_9.TextSize = 14.000
+TextLabel_9.TextWrapped = true
+TextLabel_9.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_10.Parent = Comforting
+TextLabel_10.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_10.BackgroundTransparency = 1.000
+TextLabel_10.Position = UDim2.new(0.540322542, 0, 0.37499994, 0)
+TextLabel_10.Size = UDim2.new(0, 90, 0, 21)
+TextLabel_10.Font = Enum.Font.Arial
+TextLabel_10.Text = "Bamboo Field"
+TextLabel_10.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_10.TextSize = 14.000
+TextLabel_10.TextWrapped = true
+TextLabel_10.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_11.Parent = Comforting
+TextLabel_11.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_11.BackgroundTransparency = 1.000
+TextLabel_11.Position = UDim2.new(0.540322602, 0, 0.63749963, 0)
+TextLabel_11.Size = UDim2.new(0, 133, 0, 21)
+TextLabel_11.Font = Enum.Font.Arial
+TextLabel_11.Text = "Pine Tree Forest Field"
+TextLabel_11.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_11.TextSize = 14.000
+TextLabel_11.TextWrapped = true
+TextLabel_11.TextXAlignment = Enum.TextXAlignment.Left
+
+Motivating.Name = "Motivating"
+Motivating.Parent = AllNectarInfo
+Motivating.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Motivating.Position = UDim2.new(0.0272920635, 0, 0.945725977, 0)
+Motivating.Size = UDim2.new(0, 372, 0, 80)
+
+UICorner_17.CornerRadius = UDim.new(0, 20)
+UICorner_17.Parent = Motivating
+
+ImageLabel_3.Parent = Motivating
+ImageLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel_3.BackgroundTransparency = 1.000
+ImageLabel_3.Position = UDim2.new(0.0483870953, 0, 0.162499994, 0)
+ImageLabel_3.Size = UDim2.new(0, 59, 0, 54)
+ImageLabel_3.Image = "rbxassetid://8137317537"
+ImageLabel_3.ImageColor3 = Color3.fromRGB(210, 178, 255)
+
+TextLabel_12.Parent = Motivating
+TextLabel_12.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_12.BackgroundTransparency = 1.000
+TextLabel_12.Position = UDim2.new(0.526881695, 0, 0.112499997, 0)
+TextLabel_12.Size = UDim2.new(0, 98, 0, 15)
+TextLabel_12.Font = Enum.Font.Arial
+TextLabel_12.Text = "Mushroom Field"
+TextLabel_12.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_12.TextSize = 14.000
+TextLabel_12.TextWrapped = true
+TextLabel_12.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_13.Parent = Motivating
+TextLabel_13.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_13.BackgroundTransparency = 1.000
+TextLabel_13.Position = UDim2.new(0.526881695, 0, 0.319163501, 0)
+TextLabel_13.Size = UDim2.new(0, 76, 0, 15)
+TextLabel_13.Font = Enum.Font.Arial
+TextLabel_13.Text = "Spider Field"
+TextLabel_13.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_13.TextSize = 14.000
+TextLabel_13.TextWrapped = true
+TextLabel_13.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_14.Parent = Motivating
+TextLabel_14.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_14.BackgroundTransparency = 1.000
+TextLabel_14.Position = UDim2.new(0.526881695, 0, 0.525826275, 0)
+TextLabel_14.Size = UDim2.new(0, 88, 0, 15)
+TextLabel_14.Font = Enum.Font.Arial
+TextLabel_14.Text = "Stump Field"
+TextLabel_14.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_14.TextSize = 14.000
+TextLabel_14.TextWrapped = true
+TextLabel_14.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_15.Parent = Motivating
+TextLabel_15.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_15.BackgroundTransparency = 1.000
+TextLabel_15.Position = UDim2.new(0.241935477, 0, 0.0125000002, 0)
+TextLabel_15.Size = UDim2.new(0, 93, 0, 79)
+TextLabel_15.Font = Enum.Font.Arial
+TextLabel_15.Text = "Motivating"
+TextLabel_15.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_15.TextSize = 21.000
+TextLabel_15.TextWrapped = true
+TextLabel_15.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_16.Parent = Motivating
+TextLabel_16.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_16.BackgroundTransparency = 1.000
+TextLabel_16.Position = UDim2.new(0.526881576, 0, 0.742330909, 0)
+TextLabel_16.Size = UDim2.new(0, 88, 0, 15)
+TextLabel_16.Font = Enum.Font.Arial
+TextLabel_16.Text = "Rose Field"
+TextLabel_16.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_16.TextSize = 14.000
+TextLabel_16.TextWrapped = true
+TextLabel_16.TextXAlignment = Enum.TextXAlignment.Left
+
+Invigorating.Name = "Invigorating"
+Invigorating.Parent = AllNectarInfo
+Invigorating.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Invigorating.Position = UDim2.new(0.024792064, 0, 1.25917506, 0)
+Invigorating.Size = UDim2.new(0, 372, 0, 80)
+
+UICorner_18.CornerRadius = UDim.new(0, 20)
+UICorner_18.Parent = Invigorating
+
+ImageLabel_4.Parent = Invigorating
+ImageLabel_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel_4.BackgroundTransparency = 1.000
+ImageLabel_4.Position = UDim2.new(0.0483870953, 0, 0.162499994, 0)
+ImageLabel_4.Size = UDim2.new(0, 59, 0, 54)
+ImageLabel_4.Image = "rbxassetid://8137321630"
+ImageLabel_4.ImageColor3 = Color3.fromRGB(255, 128, 116)
+
+TextLabel_17.Parent = Invigorating
+TextLabel_17.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_17.BackgroundTransparency = 1.000
+TextLabel_17.Position = UDim2.new(0.241935477, 0, 0.0125000002, 0)
+TextLabel_17.Size = UDim2.new(0, 105, 0, 79)
+TextLabel_17.Font = Enum.Font.Arial
+TextLabel_17.Text = "Invigorating"
+TextLabel_17.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_17.TextSize = 21.000
+TextLabel_17.TextWrapped = true
+TextLabel_17.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_18.Parent = Invigorating
+TextLabel_18.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_18.BackgroundTransparency = 1.000
+TextLabel_18.Position = UDim2.new(0.540322542, 0, 0.0874999985, 0)
+TextLabel_18.Size = UDim2.new(0, 74, 0, 15)
+TextLabel_18.Font = Enum.Font.Arial
+TextLabel_18.Text = "Clover Field"
+TextLabel_18.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_18.TextSize = 14.000
+TextLabel_18.TextWrapped = true
+TextLabel_18.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_19.Parent = Invigorating
+TextLabel_19.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_19.BackgroundTransparency = 1.000
+TextLabel_19.Position = UDim2.new(0.540322602, 0, 0.294163525, 0)
+TextLabel_19.Size = UDim2.new(0, 75, 0, 15)
+TextLabel_19.Font = Enum.Font.Arial
+TextLabel_19.Text = "Cactus Field"
+TextLabel_19.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_19.TextSize = 14.000
+TextLabel_19.TextWrapped = true
+TextLabel_19.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_20.Parent = Invigorating
+TextLabel_20.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_20.BackgroundTransparency = 1.000
+TextLabel_20.Position = UDim2.new(0.540322542, 0, 0.50082624, 0)
+TextLabel_20.Size = UDim2.new(0, 117, 0, 15)
+TextLabel_20.Font = Enum.Font.Arial
+TextLabel_20.Text = "Mountain Top Field"
+TextLabel_20.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_20.TextSize = 14.000
+TextLabel_20.TextWrapped = true
+TextLabel_20.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_21.Parent = Invigorating
+TextLabel_21.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_21.BackgroundTransparency = 1.000
+TextLabel_21.Position = UDim2.new(0.540322483, 0, 0.717330933, 0)
+TextLabel_21.Size = UDim2.new(0, 75, 0, 15)
+TextLabel_21.Font = Enum.Font.Arial
+TextLabel_21.Text = "Pepper Field"
+TextLabel_21.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_21.TextSize = 14.000
+TextLabel_21.TextWrapped = true
+TextLabel_21.TextXAlignment = Enum.TextXAlignment.Left
+
+Satisfying.Name = "Satisfying"
+Satisfying.Parent = AllNectarInfo
+Satisfying.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Satisfying.Position = UDim2.new(0.0246798713, 0, 0.017271094, 0)
+Satisfying.Size = UDim2.new(0, 372, 0, 80)
+
+UICorner_19.CornerRadius = UDim.new(0, 20)
+UICorner_19.Parent = Satisfying
+
+ImageLabel_5.Parent = Satisfying
+ImageLabel_5.BackgroundColor3 = Color3.fromRGB(192, 80, 200)
+ImageLabel_5.BackgroundTransparency = 1.000
+ImageLabel_5.Position = UDim2.new(0.0456989259, 0, 0.162499994, 0)
+ImageLabel_5.Size = UDim2.new(0, 59, 0, 54)
+ImageLabel_5.Image = "rbxassetid://8137320184"
+ImageLabel_5.ImageColor3 = Color3.fromRGB(255, 217, 238)
+
+TextLabel_22.Parent = Satisfying
+TextLabel_22.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_22.BackgroundTransparency = 1.000
+TextLabel_22.Position = UDim2.new(0.241935492, 0, 0.0125000002, 0)
+TextLabel_22.Size = UDim2.new(0, 87, 0, 79)
+TextLabel_22.Font = Enum.Font.Arial
+TextLabel_22.Text = "Satisfying"
+TextLabel_22.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_22.TextSize = 21.000
+TextLabel_22.TextWrapped = true
+TextLabel_22.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_23.Parent = Satisfying
+TextLabel_23.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_23.BackgroundTransparency = 1.000
+TextLabel_23.Position = UDim2.new(0.529569864, 0, 0.099999994, 0)
+TextLabel_23.Size = UDim2.new(0, 90, 0, 21)
+TextLabel_23.Font = Enum.Font.Arial
+TextLabel_23.Text = "Sunflower Field"
+TextLabel_23.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_23.TextSize = 14.000
+TextLabel_23.TextWrapped = true
+TextLabel_23.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_24.Parent = Satisfying
+TextLabel_24.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_24.BackgroundTransparency = 1.000
+TextLabel_24.Position = UDim2.new(0.529569864, 0, 0.362499952, 0)
+TextLabel_24.Size = UDim2.new(0, 90, 0, 21)
+TextLabel_24.Font = Enum.Font.Arial
+TextLabel_24.Text = "Pineapple Field"
+TextLabel_24.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_24.TextSize = 14.000
+TextLabel_24.TextWrapped = true
+TextLabel_24.TextXAlignment = Enum.TextXAlignment.Left
+
+TextLabel_25.Parent = Satisfying
+TextLabel_25.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_25.BackgroundTransparency = 1.000
+TextLabel_25.Position = UDim2.new(0.529569864, 0, 0.624999881, 0)
+TextLabel_25.Size = UDim2.new(0, 90, 0, 21)
+TextLabel_25.Font = Enum.Font.Arial
+TextLabel_25.Text = "Pumpkin Field"
+TextLabel_25.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_25.TextSize = 14.000
+TextLabel_25.TextWrapped = true
+TextLabel_25.TextXAlignment = Enum.TextXAlignment.Left
+
+background_credit.Name = "background_credit"
+background_credit.Parent = SberKonScript
+background_credit.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+background_credit.ClipsDescendants = true
+background_credit.Position = UDim2.new(0.200897351, 0, 0.204800844, 0)
+background_credit.Size = UDim2.new(0, 400, 0, 190)
+background_credit.Visible = false
+
+UICorner_20.CornerRadius = UDim.new(0, 20)
+UICorner_20.Parent = background_credit
+
+TextLabel_26.Parent = background_credit
+TextLabel_26.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_26.BackgroundTransparency = 1.000
+TextLabel_26.Position = UDim2.new(0.0149999997, 0, 0, 0)
+TextLabel_26.Size = UDim2.new(0, 130, 0, 45)
+TextLabel_26.Font = Enum.Font.Arial
+TextLabel_26.Text = "Credit by: SberKon"
+TextLabel_26.TextColor3 = Color3.fromRGB(86, 86, 86)
+TextLabel_26.TextSize = 14.000
+
+background_setting.Name = "background_setting"
+background_setting.Parent = SberKonScript
+background_setting.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+background_setting.ClipsDescendants = true
+background_setting.Position = UDim2.new(0.200897351, 0, 0.204800844, 0)
+background_setting.Size = UDim2.new(0, 400, 0, 190)
+background_setting.Visible = false
+
+UICorner_21.CornerRadius = UDim.new(0, 20)
+UICorner_21.Parent = background_setting
+
+CheckBox.Name = "CheckBox"
+CheckBox.Parent = background_setting
+CheckBox.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+CheckBox.Position = UDim2.new(0.251242459, 0, 0.0376082622, 0)
+CheckBox.Size = UDim2.new(0, 30, 0, 30)
+CheckBox.ImageColor3 = Color3.fromRGB(112, 0, 204)
+
+UICorner_22.CornerRadius = UDim.new(0, 7)
+UICorner_22.Parent = CheckBox
+
+TextLabel_27.Parent = background_setting
+TextLabel_27.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_27.BackgroundTransparency = 1.000
+TextLabel_27.Position = UDim2.new(0.0299999975, 0, 0.0842105597, 0)
+TextLabel_27.Size = UDim2.new(0, 78, 0, 24)
+TextLabel_27.Font = Enum.Font.SourceSans
+TextLabel_27.Text = "open/close"
+TextLabel_27.TextColor3 = Color3.fromRGB(86, 86, 86)
+TextLabel_27.TextSize = 14.000
+
+TextLabel_28.Parent = background_setting
+TextLabel_28.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_28.BackgroundTransparency = 1.000
+TextLabel_28.Position = UDim2.new(0.0299999975, 0, 0.0157894865, 0)
+TextLabel_28.Size = UDim2.new(0, 78, 0, 24)
+TextLabel_28.Font = Enum.Font.SourceSans
+TextLabel_28.Text = "Button"
+TextLabel_28.TextColor3 = Color3.fromRGB(86, 86, 86)
+TextLabel_28.TextSize = 14.000
+
+Close_open.Name = "Close_open"
+Close_open.Parent = SberKonScriptGui
+Close_open.BackgroundColor3 = Color3.fromRGB(112, 0, 204)
+Close_open.Position = UDim2.new(0.799599171, 0, 0.428797454, 0)
+Close_open.Size = UDim2.new(0, 200, 0, 50)
+Close_open.Visible = false
+Close_open.Font = Enum.Font.Arial
+Close_open.Text = "Close"
+Close_open.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close_open.TextSize = 31.000
+Close_open.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+
+UICorner_23.CornerRadius = UDim.new(10, 10)
+UICorner_23.Parent = Close_open
+
+-- Scripts:
+
+local function XIRPJX_fake_script() -- ClaimAllDispenser.LocalScript 
+	local script = Instance.new('LocalScript', ClaimAllDispenser)
+
+	function onClick()
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Blue Field Booster")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Red Field Booster")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Glue Dispenser")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Coconut Dispenser")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Gingerbread House")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Strawberry Dispenser")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Blueberry Dispenser")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Treat Dispenser")
+		game.ReplicatedStorage.Events.ToyEvent:FireServer("Honey Dispenser")
+		game:GetService("ReplicatedStorage").Events.ToyEvent:FireServer("Free Royal Jelly Dispenser")
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(XIRPJX_fake_script)()
+local function MMNMIPY_fake_script() -- SummonSprout.LocalScript 
+	local script = Instance.new('LocalScript', SummonSprout)
+
+	function onClick()
+		game:GetService("ReplicatedStorage").Events.ToyEvent:FireServer("Sprout Summoner")
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(MMNMIPY_fake_script)()
+local function CEULS_fake_script() -- ReddemAllCodes.LocalScript 
+	local script = Instance.new('LocalScript', ReddemAllCodes)
+
+	function onClick()
+		promo = game.ReplicatedStorage.Events.PromoCodeEvent
+		promo:FireServer("38217")
+		promo:FireServer("Bopmaster")
+		promo:FireServer("Buzz")
+		promo:FireServer("Cog")
+		promo:FireServer("Connoisseur")
+		promo:FireServer("Crawlers")
+		promo:FireServer("Nectar")
+		promo:FireServer("Roof")
+		promo:FireServer("Wax")
+		promo:FireServer("Wink")
+		promo:FireServer("ClubBean")
+		promo:FireServer("SecretProfileCode")
+		promo:FireServer("WikiHonor")
+		promo:FireServer("WikiAwardClock")
+		promo:FireServer("GumdropsForScience")
+		promo:FireServer("Sure")
+		promo:FireServer("BloxyCelebration")
+		promo:FireServer("ClubConverters")
+		promo:FireServer("ClubBasket")
+		promo:FireServer("Marshmallow")
+		promo:FireServer("500Mil")
+		promo:FireServer("Discord100k")
+		promo:FireServer("BeeDay2019")
+		promo:FireServer("TornadoGlitch")
+		promo:FireServer("RebootCloud")
+		promo:FireServer("Tornado")
+		promo:FireServer("ClubCloud")
+		promo:FireServer("Gumaden10T")
+		promo:FireServer("Beesmasbegins")
+		promo:FireServer("BeesBuzz123")
+		promo:FireServer("JollyJelly")
+		promo:FireServer("FestiveFrogs")
+		promo:FireServer("BANNED")
+		promo:FireServer("Mocito100T")
+		promo:FireServer("RedMarket")
+		promo:FireServer("5mMembers")
+		promo:FireServer("Cubly")
+		promo:FireServer("Buoyant")
+		promo:FireServer("BigBag")
+		promo:FireServer("Teespring")
+		promo:FireServer("BeesBuzz123")
+		promo:FireServer("Discord100k")
+		promo:FireServer("ClubConverters")
+		promo:FireServer("500mil")
+		promo:FireServer("Marshmallow")
+		wait(0.5)
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(CEULS_fake_script)()
+local function EJQSZV_fake_script() -- GingerbreadHouse.LocalScript 
+	local script = Instance.new('LocalScript', GingerbreadHouse)
+
+	function onClick()
+		game:GetService("ReplicatedStorage").Events.ToyEvent:FireServer("Gingerbread House")
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(EJQSZV_fake_script)()
+local function BAZOTW_fake_script() -- WealthClock.LocalScript 
+	local script = Instance.new('LocalScript', WealthClock)
+
+	function onClick()
+		game:GetService("ReplicatedStorage").Events.ToyEvent:FireServer("Wealth Clock")
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(BAZOTW_fake_script)()
+local function PRPR_fake_script() -- Honeystorm.LocalScript 
+	local script = Instance.new('LocalScript', Honeystorm)
+
+	function onClick()
+		game:GetService("ReplicatedStorage").Events.ToyEvent:FireServer("Honeystorm")
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(PRPR_fake_script)()
+local function PTQGS_fake_script() -- SberKonScript.SberKon Be sawrm Script 
+	local script = Instance.new('LocalScript', SberKonScript)
+
+	local Button = script.Parent
+	SberKonScript = script.Parent.Parent.SberKonScript
+	SberKonScript.Active = true
+	SberKonScript.Draggable = true
+	
+	local mouse = game.Players.LocalPlayer:GetMouse()
+	function open_close()
+		if SberKonScript.Visible == false then
+			SberKonScript.Visible = true
+		elseif SberKonScript.Visible == true then
+			SberKonScript.Visible = false
+		end
+	end
+	
+	mouse.KeyDown:connect(function(key)
+		key = key:lower()
+		if key == "g" then ---Change to any letter you want. ex:(a,s,d,f,g,h,j,y,q,e,r,y,u,i,o,z,c,v,b,n,n,m,)
+			open_close()
+		end
+	end)
+end
+coroutine.wrap(PTQGS_fake_script)()
+local function BXLBGH_fake_script() -- Main.LocalScript 
+	local script = Instance.new('LocalScript', Main)
+
+	local Main = script.Parent.Parent.Main
+	NectarInfo = script.Parent.Parent.NectarInfo
+	Credit = script.Parent.Parent.Credit
+	Setting = script.Parent.Parent.Settings
+	main = script.Parent.Parent.Parent.background_main
+	nectarmain = script.Parent.Parent.Parent.background_nectarinfo
+	credit = script.Parent.Parent.Parent.background_credit
+	setting = script.Parent.Parent.Parent.background_setting
+	
+	
+	function onClick()
+		NectarInfo.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Main.TextColor3 = Color3.new (1, 1, 1)
+		Credit.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Setting.TextColor3 = Color3.new(0.345098, 0.345098, 0.345098)
+		main.Visible = true
+		credit.Visible = false
+		nectarmain.Visible = false
+		setting.Visible = false
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+end
+coroutine.wrap(BXLBGH_fake_script)()
+local function HVVMJN_fake_script() -- NectarInfo.LocalScript 
+	local script = Instance.new('LocalScript', NectarInfo)
+
+	local Main = script.Parent.Parent.Main
+	NectarInfo = script.Parent.Parent.NectarInfo
+	Credit = script.Parent.Parent.Credit
+	Setting = script.Parent.Parent.Settings
+	main = script.Parent.Parent.Parent.background_main
+	nectarmain = script.Parent.Parent.Parent.background_nectarinfo
+	credit = script.Parent.Parent.Parent.background_credit
+	setting = script.Parent.Parent.Parent.background_setting
+	
+	
+	function onClick()
+		NectarInfo.TextColor3 = Color3.new (1, 1, 1)
+		Main.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Credit.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Setting.TextColor3 = Color3.new(0.345098, 0.345098, 0.345098)
+		main.Visible = false
+		credit.Visible = false
+		nectarmain.Visible = true
+		setting.Visible = false
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+end
+coroutine.wrap(HVVMJN_fake_script)()
+local function OBDID_fake_script() -- Settings.LocalScript 
+	local script = Instance.new('LocalScript', Settings)
+
+	local Main = script.Parent.Parent.Main
+	NectarInfo = script.Parent.Parent.NectarInfo
+	Credit = script.Parent.Parent.Credit
+	Setting = script.Parent.Parent.Settings
+	main = script.Parent.Parent.Parent.background_main
+	nectarmain = script.Parent.Parent.Parent.background_nectarinfo
+	credit = script.Parent.Parent.Parent.background_credit
+	setting = script.Parent.Parent.Parent.background_setting
+	
+	
+	function onClick()
+		NectarInfo.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Main.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Credit.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Setting.TextColor3 = Color3.new(1, 1, 1)
+		main.Visible = false
+		credit.Visible = false
+		nectarmain.Visible = false
+		setting.Visible = true
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+	
+	
+end
+coroutine.wrap(OBDID_fake_script)()
+local function KOER_fake_script() -- Credit.LocalScript 
+	local script = Instance.new('LocalScript', Credit)
+
+	local Main = script.Parent.Parent.Main
+	NectarInfo = script.Parent.Parent.NectarInfo
+	Credit = script.Parent.Parent.Credit
+	Setting = script.Parent.Parent.Settings
+	main = script.Parent.Parent.Parent.background_main
+	nectarmain = script.Parent.Parent.Parent.background_nectarinfo
+	credit = script.Parent.Parent.Parent.background_credit
+	setting = script.Parent.Parent.Parent.background_setting
+	
+	
+	function onClick()
+		NectarInfo.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Main.TextColor3 = Color3.new (0.345098, 0.345098, 0.345098)
+		Credit.TextColor3 = Color3.new (1, 1, 1)
+		Setting.TextColor3 = Color3.new(0.345098, 0.345098, 0.345098)
+		main.Visible = false
+		credit.Visible = true
+		nectarmain.Visible = false
+		setting.Visible = false
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+end
+coroutine.wrap(KOER_fake_script)()
+local function NRNVDN_fake_script() -- CheckBox.Check 
+	local script = Instance.new('Script', CheckBox)
+
+	checked = "http://www.roblox.com/asset/?id=1489284025"
+	unchecked = "none"
+	checkValue = script.Parent["Checked"]
+	Closemenu = script.Parent.Parent.Parent.Parent.Close_open
+	
+	script.Parent.MouseButton1Down:connect(function()
+	if checkValue.Value then
+	checkValue.Value = false
+	script.Parent.Image = unchecked
+	Closemenu.Visible = false
+	else
+	checkValue.Value = true
+	script.Parent.Image = checked
+	Closemenu.Visible = true
+	end
+	end)
+end
+coroutine.wrap(NRNVDN_fake_script)()
+local function WPKNB_fake_script() -- CheckBox.LocalScript 
+	local script = Instance.new('LocalScript', CheckBox)
+
+	local Button = script.Parent
+	Closemenu = script.Parent.Parent.Parent.Parent.Close_open
+	checkValue = script.Parent["Checked"]
+	
+	function open_close()
+		if checkValue.Value = false then
+			Closemenu.Visible = true
+		elseif checkValue.Value = true then
+			Closemenu.Visible = false
+		end
+	end
+	
+	function onClick()
+		open_close()
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+end
+coroutine.wrap(WPKNB_fake_script)()
+local function WPOYKP_fake_script() -- Close_open.LocalScript 
+	local script = Instance.new('LocalScript', Close_open)
+
+	local Button = script.Parent
+	SberKonScript = script.Parent.Parent.SberKonScript
+	Close_open_button = script.Parent.Parent.Close_open
+	
+	
+	function open_close()
+		if SberKonScript.Visible == false then
+			SberKonScript.Visible = true
+			Close_open_button.Text = "Close"
+		elseif SberKonScript.Visible == true then
+			SberKonScript.Visible = false
+			Close_open_button.Text = "Open"
+		end
+	end
+	
+	function onClick()
+		open_close()
+	end
+	
+	script.Parent.MouseButton1Click:connect(onClick)
+end
+coroutine.wrap(WPOYKP_fake_script)()
