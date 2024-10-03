@@ -39,7 +39,7 @@
             font-size: 15px;
             margin-top: 15px;
         }
-        #testPushButton {
+        #setTimerButton {
             padding: 10px 20px;
             font-size: 18px;
             background-color: #007bff;
@@ -60,8 +60,8 @@
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
-    <!-- Кнопка для тесту push-повідомлень -->
-    <button id="testPushButton">Тест push-повідомлення</button>
+    <!-- Кнопка для встановлення таймера -->
+    <button id="setTimerButton">Встановити таймер на 10 секунд до 100 енергії</button>
 
     <script>
     let number = 0;
@@ -88,14 +88,18 @@
         }
     }
 
-    // Функція для отримання даних з сервера
-    async function fetchCounterData() {
-        // Для цього прикладу не потрібні серверні запити, тому функцію залишаємо без змін
-    }
-
-    // Функція для оновлення лічильника на сервері
-    async function updateCounterOnServer(newCounter) {
-        // Для цього прикладу не потрібні серверні запити, тому функцію залишаємо без змін
+    // Функція для надсилання push-повідомлення
+    function sendEnergyNotification() {
+        if (Notification.permission === 'granted') {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.showNotification('100 енергії досягнуто!', {
+                    body: 'Вітаємо! Ваш лічильник досяг 100 енергії.',
+                    icon: '/icon-192x192.png',
+                    vibrate: [200, 100, 200],
+                    tag: 'energy-notification'
+                });
+            });
+        }
     }
 
     // Оновлюємо лічильник і таймер на основі секундоміра
@@ -110,6 +114,7 @@
 
         if (number >= maxNumber) {
             document.getElementById("timer").style.display = "none";
+            sendEnergyNotification(); // Надсилаємо повідомлення про досягнення 100 енергії
         } else {
             document.getElementById("timer").style.display = "block";
         }
@@ -163,33 +168,16 @@
         });
     }
 
-    // Функція для надсилання push-повідомлення
-    function sendTestPushNotification() {
-        if (Notification.permission === 'granted') {
-            navigator.serviceWorker.ready.then(registration => {
-                registration.showNotification('Тестове push-повідомлення', {
-                    body: 'Це тестове повідомлення.',
-                    icon: '/icon-192x192.png',
-                    vibrate: [200, 100, 200],
-                    tag: 'test-push'
-                });
-            });
-        } else {
-            console.log('Push-повідомлення не дозволені');
-        }
-    }
+    // Встановлення таймера на 10 секунд до 100 енергії
+    document.getElementById('setTimerButton').addEventListener('click', () => {
+        const timeToNextIncrement = Math.ceil((incrementInterval - (Date.now() - stopwatchStartTime) % incrementInterval) / 1000);
+        const timeUntilNotification = Math.max(0, timeToNextIncrement - 10); // 10 секунд до 100 енергії
 
-    // Запит на дозвіл для push-повідомлень при натисканні на кнопку
-    document.getElementById('testPushButton').addEventListener('click', () => {
-        if (Notification.permission === 'default') {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    sendTestPushNotification();
-                }
-            });
-        } else if (Notification.permission === 'granted') {
-            sendTestPushNotification();
-        }
+        setTimeout(() => {
+            if (number < maxNumber) {
+                sendEnergyNotification();
+            }
+        }, timeUntilNotification * 1000); // Надсилання повідомлення через 10 секунд
     });
     </script>
 
