@@ -40,18 +40,15 @@
             margin-top: 15px;
             display: none;
         }
-        #test-btn {
-            font-size: 20px;
+        #testPushButton {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            font-size: 18px;
+            background-color: #007bff;
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 20px;
             border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-        #test-btn:hover {
-            background-color: #45a049;
         }
     </style>
 </head>
@@ -64,8 +61,8 @@
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
-    <!-- Додаємо кнопку для тестування -->
-    <button id="test-btn">Тест повідомлення</button>
+    <!-- Кнопка для тесту push-повідомлень -->
+    <button id="testPushButton">Тест push-повідомлення</button>
 
     <script>
     let number = 0;
@@ -156,13 +153,46 @@
         });
     }
 
-    // Функція для тестування спливаючого повідомлення
-    document.getElementById("test-btn").addEventListener("click", () => {
-        alert("Це тестове повідомлення!"); // Спливаюче вікно з повідомленням
-    });
-
     // Старт секундоміра
     startStopwatch();
+
+    // Реєстрація Service Worker для підтримки push-сповіщень
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then(registration => {
+            console.log('Service Worker зареєстровано:', registration);
+        }).catch(error => {
+            console.error('Помилка реєстрації Service Worker:', error);
+        });
+    }
+
+    // Функція для надсилання push-повідомлення
+    function sendTestPushNotification() {
+        if (Notification.permission === 'granted') {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.showNotification('Тестове push-повідомлення', {
+                    body: 'Це тестове повідомлення.',
+                    icon: '/icon-192x192.png',
+                    vibrate: [200, 100, 200],
+                    tag: 'test-push'
+                });
+            });
+        } else {
+            console.log('Push-повідомлення не дозволені');
+        }
+    }
+
+    // Запит на дозвіл для push-повідомлень при натисканні на кнопку
+    document.getElementById('testPushButton').addEventListener('click', () => {
+        if (Notification.permission === 'default') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    sendTestPushNotification();
+                }
+            });
+        } else if (Notification.permission === 'granted') {
+            sendTestPushNotification();
+        }
+    });
     </script>
 
 </body>
