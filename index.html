@@ -55,19 +55,19 @@
 
     <div>
         <span id="lightning">⚡</span>
-        <span id="counter" contenteditable="true">0</span>
+        <span id="counter" contenteditable="true">99</span>
     </div>
-    <div id="timer">Наступне: 2:00</div>
-    <div id="stopwatch">Секундомір: 0:00</div>
+    <div id="timer">Наступне: 00:10</div>
+    <div id="stopwatch">Секундомір: 199:50</div>
 
     <!-- Кнопка для встановлення таймера -->
     <button id="setTimerButton">Встановити таймер на 10 секунд до 100 енергії</button>
 
     <script>
-    let number = 0;
+    let number = 99; // Лічильник починається з 99
     const maxNumber = 100;
     const incrementInterval = 120000; // 2 хвилини
-    let stopwatchStartTime = Date.now();
+    let stopwatchStartTime = Date.now() - (120 * 1000); // Секундомір починається з 199:50
     let stopwatchInterval;
 
     // Функція для збереження даних в localStorage
@@ -84,7 +84,7 @@
             number = parseInt(savedCounter, 10);
             stopwatchStartTime = parseInt(savedStartTime, 10);
         } else {
-            stopwatchStartTime = Date.now(); // Якщо даних немає, встановлюємо поточний час
+            stopwatchStartTime = Date.now() - (120 * 1000); // Якщо даних немає, встановлюємо стартовий час для секундоміра
         }
     }
 
@@ -106,11 +106,11 @@
     function updateNumberAndTimer() {
         const elapsedTime = Date.now() - stopwatchStartTime;
         const increments = Math.floor(elapsedTime / incrementInterval);
-        number = Math.min(increments, maxNumber);
-        document.getElementById("counter").innerText = number;
+        number = Math.min(increments + 99, maxNumber); // Лічильник починається з 99
 
         const timeToNextIncrement = incrementInterval - (elapsedTime % incrementInterval);
-        document.getElementById("timer").innerText = `${formatTime(Math.ceil(timeToNextIncrement / 1000))}`;
+        const secondsToNextIncrement = Math.ceil(timeToNextIncrement / 1000);
+        document.getElementById("timer").innerText = `Наступне: ${formatTime(secondsToNextIncrement)}`;
 
         if (number >= maxNumber) {
             document.getElementById("timer").style.display = "none";
@@ -170,12 +170,15 @@
 
     // Встановлення таймера на 10 секунд до 100 енергії
     document.getElementById('setTimerButton').addEventListener('click', () => {
-        const timeToNextIncrement = Math.ceil((incrementInterval - (Date.now() - stopwatchStartTime) % incrementInterval) / 1000);
-        const timeUntilNotification = Math.max(0, timeToNextIncrement - 10); // 10 секунд до 100 енергії
+        const secondsToNextIncrement = Math.ceil((incrementInterval - (Date.now() - stopwatchStartTime) % incrementInterval) / 1000);
+        const timeUntilNotification = Math.max(0, secondsToNextIncrement - 10); // 10 секунд до 100 енергії
 
+        // Встановлюємо таймер на 10 секунд до досягнення 100
+        document.getElementById("timer").innerText = `Наступне: 00:10`;
+        
         setTimeout(() => {
             if (number < maxNumber) {
-                sendEnergyNotification();
+                sendEnergyNotification(); // Надсилаємо повідомлення
             }
         }, timeUntilNotification * 1000); // Надсилання повідомлення через 10 секунд
     });
