@@ -58,9 +58,11 @@
     let number = 0;
     const maxNumber = 100;
     const incrementInterval = 120000; // 2 хвилини
+    const notificationDelay = 200 * 60 * 1000; // 200 хвилин у мілісекундах
     let stopwatchStartTime = Date.now();
     let stopwatchInterval;
-    let notificationSent = false; // Флаг для контролю над надсиланням повідомлення
+    let notificationSent = false;
+    let notificationTimeout; // Таймаут для відправки повідомлення
 
     // Функція для отримання даних з localStorage
     function loadFromLocalStorage() {
@@ -105,6 +107,7 @@
 
             // Відправка повідомлення лише один раз, коли досягається 100
             if (!notificationSent) {
+                clearTimeout(notificationTimeout); // Скасовуємо таймаут повідомлення
                 sendNotification();
                 notificationSent = true; // Змінюємо флаг, щоб уникнути повторної відправки
                 saveToLocalStorage(); // Зберігаємо стан
@@ -133,6 +136,7 @@
         // Оновлюємо час запуску секундоміра
         stopwatchStartTime = Date.now();
         notificationSent = false; // Дозволяємо відправку повідомлення знову при досягненні 100
+        startNotificationTimer(); // Перезапускаємо таймер повідомлення
         saveToLocalStorage(); // Зберігаємо стан
         location.reload(); // Оновлюємо сторінку
     });
@@ -150,10 +154,19 @@
         }
     }
 
+    // Функція для запуску таймера на 200 хвилин
+    function startNotificationTimer() {
+        clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
+        notificationTimeout = setTimeout(() => {
+            sendNotification();
+        }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
+    }
+
     // Запуск секундоміра при завантаженні сторінки
     function startStopwatch() {
         loadFromLocalStorage(); // Завантажуємо дані з localStorage
         stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
+        startNotificationTimer(); // Запускаємо таймер для повідомлення
     }
 
     // Старт секундоміра
