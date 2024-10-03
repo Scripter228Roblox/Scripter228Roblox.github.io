@@ -38,6 +38,7 @@
         #stopwatch {
             font-size: 15px;
             margin-top: 15px;
+            display: none;
         }
     </style>
 </head>
@@ -51,92 +52,96 @@
     <div id="stopwatch">Секундомір: 0:00</div>
 
     <script>
-        let number = parseInt(localStorage.getItem('number')) || 0; // Лічильник
-        const maxNumber = 100;
-        const incrementInterval = 120000; // Кожні 2 хвилини (120 секунд)
-        let stopwatchStartTime = parseInt(localStorage.getItem('stopwatchStartTime')) || Date.now(); // Час запуску секундоміра
-        let stopwatchInterval; // Змінна для секундоміра
+    let number = 0;
+    const maxNumber = 100;
+    const incrementInterval = 120000; // 2 хвилини
+    let stopwatchStartTime = Date.now();
+    let stopwatchInterval;
 
-        // Запит на дозвіл на повідомлення
-        if ('Notification' in window) {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    console.log('Дозвіл на повідомлення отримано.');
-                }
+    // Функція для отримання даних з сервера
+    async function fetchCounterData() {
+        try {
+            const response = await fetch('/counter'); // Запит до сервера
+            const data = await response.json();
+            number = data.counter;
+            stopwatchStartTime = data.startTime;
+            updateNumberAndTimer(); // Оновлюємо таймер і лічильник на основі отриманих даних
+        } catch (error) {
+            console.error('Помилка отримання даних:', error);
+        }
+    }
+
+    // Функція для оновлення лічильника на сервері
+    async function updateCounterOnServer(newCounter) {
+        try {
+            await fetch('/counter', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newCounter })
             });
+        } catch (error) {
+            console.error('Помилка оновлення даних на сервері:', error);
+        }
+    }
+
+    // Оновлюємо лічильник і таймер на основі секундоміра
+    function updateNumberAndTimer() {
+        const elapsedTime = Date.now() - stopwatchStartTime;
+        const increments = Math.floor(elapsedTime / incrementInterval);
+        number = Math.min(increments, maxNumber);
+        document.getElementById("counter").innerText = number;
+
+        const timeToNextIncrement = incrementInterval - (elapsedTime % incrementInterval);
+        document.getElementById("timer").innerText = `${formatTime(Math.ceil(timeToNextIncrement / 1000))}`;
+
+        if (number >= maxNumber) {
+            document.getElementById("timer").style.display = "none";
+        } else {
+            document.getElementById("timer").style.display = "block";
         }
 
-        // Функція для надсилання повідомлень
-        function sendNotification() {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Енергія досягла 100!', {
-                    body: 'Вітаємо! Ви досягли максимального рівня енергії.',
-                    icon: '/icon-192x192.png' // Вставте URL до іконки
-                });
-            }
+        document.getElementById("stopwatch").innerText = `Секундомір: ${Math.floor(elapsedTime / 60000)}:${String(Math.floor(elapsedTime / 1000) % 60).padStart(2, '0')}`;
+    }
+
+    // Форматування часу у форматі mm:ss
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${String(minutes).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    // Скидаємо лічильник при натисканні на блискавку
+    document.getElementById("lightning").addEventListener("click", () => {
+        number = 0; // Скидаємо лічильник
+        document.getElementById("counter").innerText = number;
+        updateCounterOnServer(number); // Оновлюємо значення на сервері
+
+        // Оновлюємо час запуску секундоміра
+        const currentTime = Date.now();
+        stopwatchStartTime = currentTime;
+        updateCounterOnServer(number); // Оновлюємо час на сервері
+        location.reload(); // Оновлюємо сторінку
+    });
+
+    // Редагування лічильника
+    document.getElementById("counter").addEventListener("input", () => {
+        const newValue = parseInt(document.getElementById("counter").innerText);
+        if (!isNaN(newValue) && newValue >= 0 && newValue <= maxNumber) {
+            number = newValue;
+            updateCounterOnServer(number); // Оновлюємо значення на сервері
+            location.reload(); // Оновлюємо сторінку з новими даними
         }
+    });
 
-        // Оновлюємо лічильник і таймер на основі секундоміра
-        function updateNumberAndTimer() {
-            const elapsedTime = Date.now() - stopwatchStartTime; // Час, що минув
-            const minutesElapsed = Math.floor(elapsedTime / 60000); // Минулі хвилини
-            const secondsElapsed = Math.floor(elapsedTime / 1000) % 60; // Минулі секунди
-
-            // Оновлюємо секундомір
-            document.getElementById("stopwatch").innerText = `Секундомір: ${minutesElapsed}:${String(secondsElapsed).padStart(2, '0')}`;
-
-            // Оновлюємо лічильник на основі часу
-            const increments = Math.floor(elapsedTime / incrementInterval);
-            number = Math.min(increments, maxNumber);
-            document.getElementById("counter").innerText = number;
-
-            // Рахуємо час до наступного збільшення лічильника
-            const timeToNextIncrement = incrementInterval - (elapsedTime % incrementInterval);
-            document.getElementById("timer").innerText = `${formatTime(Math.ceil(timeToNextIncrement / 1000))}`; // Додаємо округлення до наступної секунди
-
-            // Перевіряємо, чи досягли 100
-            if (number === maxNumber) {
-                sendNotification(); // Надсилаємо повідомлення
-            }
-
-            // Ховаємо таймер, якщо лічильник досягнув 100
-            if (number >= maxNumber) {
-                document.getElementById("timer").style.display = "none";
-            } else {
-                document.getElementById("timer").style.display = "block";
-            }
-
-            localStorage.setItem('number', number); // Зберігаємо значення лічильника
-        }
-
-        // Форматуємо час у форматі mm:ss
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);  // Тільки секунди, без десятих
-            return `${String(minutes).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-
-        // Скидаємо лічильник і таймер при натисканні на блискавку
-        document.getElementById("lightning").addEventListener("click", () => {
-            number = 0; // Скидаємо лічильник
-            document.getElementById("counter").innerText = number;
-            localStorage.setItem('number', number);
-
-            // Оновлюємо час запуску секундоміра
-            const currentTime = Date.now();
-            localStorage.setItem('stopwatchStartTime', currentTime);
-            stopwatchStartTime = currentTime; // Оновлюємо стартовий час у змінній
-            location.reload(); // Оновлюємо сторінку, щоб перезапустити
-        });
-
-        // Запускаємо секундомір при завантаженні сторінки
-        function startStopwatch() {
-            updateNumberAndTimer(); // Початкове оновлення
+    // Запуск секундоміра при завантаженні сторінки
+    function startStopwatch() {
+        fetchCounterData().then(() => {
             stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
-        }
+        });
+    }
 
-        // Стартуємо секундомір
-        startStopwatch();
+    // Старт секундоміра
+    startStopwatch();
     </script>
 
 </body>
