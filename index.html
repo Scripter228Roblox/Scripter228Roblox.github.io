@@ -40,16 +40,18 @@
             margin-top: 15px;
             display: none;
         }
-        #permissionBtn {
-            font-size: 18px;
-            padding: 10px;
-            background-color: #007bff;
+        #test-btn {
+            font-size: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
         }
-        #permissionBtn:hover {
-            background-color: #0056b3;
+        #test-btn:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -61,7 +63,9 @@
     </div>
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
-    <button id="permissionBtn">Отримати дозвіл на фоновий режим</button>
+
+    <!-- Додаємо кнопку для тестування -->
+    <button id="test-btn">Тест повідомлення</button>
 
     <script>
     let number = 0;
@@ -152,27 +156,9 @@
         });
     }
 
-    // Підтримка роботи в фоновому режимі через Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-            console.log('Service Worker зареєстровано:', registration);
-        }).catch(error => {
-            console.log('Помилка реєстрації Service Worker:', error);
-        });
-    }
-
-    // Запит дозволу на фоновий режим
-    document.getElementById("permissionBtn").addEventListener("click", async () => {
-        if ('Notification' in window) {
-            let permission = await Notification.requestPermission();
-            if (permission === "granted") {
-                alert("Дозвіл на отримання повідомлень надано!");
-            } else {
-                alert("Дозвіл на повідомлення не надано!");
-            }
-        } else {
-            alert("Ваш браузер не підтримує повідомлення.");
-        }
+    // Функція для тестування спливаючого повідомлення
+    document.getElementById("test-btn").addEventListener("click", () => {
+        alert("Це тестове повідомлення!"); // Спливаюче вікно з повідомленням
     });
 
     // Старт секундоміра
