@@ -51,7 +51,7 @@
         <span id="lightning">⚡</span>
         <span id="counter" contenteditable="true">0</span>
     </div>
-    <div id="timer">2:00</div>
+    <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
     <script>
@@ -62,30 +62,31 @@
     let stopwatchInterval;
     let notificationSent = false; // Флаг для контролю над надсиланням повідомлення
 
-    // Функція для отримання даних з сервера
-    async function fetchCounterData() {
-        try {
-            const response = await fetch('/counter');
-            const data = await response.json();
-            number = data.counter;
-            stopwatchStartTime = data.startTime;
-            updateNumberAndTimer(); // Оновлюємо таймер і лічильник на основі отриманих даних
-        } catch (error) {
-            console.error('Помилка отримання даних:', error);
+    // Функція для отримання даних з localStorage
+    function loadFromLocalStorage() {
+        const savedNumber = localStorage.getItem('counter');
+        const savedStartTime = localStorage.getItem('startTime');
+        const savedNotificationSent = localStorage.getItem('notificationSent');
+
+        if (savedNumber) {
+            number = parseInt(savedNumber, 10);
+            document.getElementById("counter").innerText = number;
+        }
+
+        if (savedStartTime) {
+            stopwatchStartTime = parseInt(savedStartTime, 10);
+        }
+
+        if (savedNotificationSent) {
+            notificationSent = savedNotificationSent === 'true';
         }
     }
 
-    // Функція для оновлення лічильника на сервері
-    async function updateCounterOnServer(newCounter) {
-        try {
-            await fetch('/counter', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ newCounter })
-            });
-        } catch (error) {
-            console.error('Помилка оновлення даних на сервері:', error);
-        }
+    // Функція для збереження даних у localStorage
+    function saveToLocalStorage() {
+        localStorage.setItem('counter', number);
+        localStorage.setItem('startTime', stopwatchStartTime);
+        localStorage.setItem('notificationSent', notificationSent.toString());
     }
 
     // Оновлюємо лічильник і таймер на основі секундоміра
@@ -106,6 +107,7 @@
             if (!notificationSent) {
                 sendNotification();
                 notificationSent = true; // Змінюємо флаг, щоб уникнути повторної відправки
+                saveToLocalStorage(); // Зберігаємо стан
             }
         } else {
             document.getElementById("timer").classList.remove("hidden");
@@ -113,6 +115,7 @@
         }
 
         document.getElementById("stopwatch").innerText = `Секундомір: ${Math.floor(elapsedTime / 60000)}:${String(Math.floor(elapsedTime / 1000) % 60).padStart(2, '0')}`;
+        saveToLocalStorage(); // Зберігаємо стан кожного разу при оновленні
     }
 
     // Форматування часу у форматі mm:ss
@@ -126,11 +129,11 @@
     document.getElementById("lightning").addEventListener("click", () => {
         number = 0; // Скидаємо лічильник
         document.getElementById("counter").innerText = number;
-        updateCounterOnServer(number);
 
         // Оновлюємо час запуску секундоміра
         stopwatchStartTime = Date.now();
         notificationSent = false; // Дозволяємо відправку повідомлення знову при досягненні 100
+        saveToLocalStorage(); // Зберігаємо стан
         location.reload(); // Оновлюємо сторінку
     });
 
@@ -149,9 +152,8 @@
 
     // Запуск секундоміра при завантаженні сторінки
     function startStopwatch() {
-        fetchCounterData().then(() => {
-            stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
-        });
+        loadFromLocalStorage(); // Завантажуємо дані з localStorage
+        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
     }
 
     // Старт секундоміра
