@@ -38,7 +38,6 @@
         #stopwatch {
             font-size: 15px;
             margin-top: 15px;
-            display: none;
         }
         #testPushButton {
             padding: 10px 20px;
@@ -71,30 +70,32 @@
     let stopwatchStartTime = Date.now();
     let stopwatchInterval;
 
+    // Функція для збереження даних в localStorage
+    function saveToLocalStorage() {
+        localStorage.setItem('counter', number);
+        localStorage.setItem('startTime', stopwatchStartTime);
+    }
+
+    // Функція для завантаження даних з localStorage
+    function loadFromLocalStorage() {
+        const savedCounter = localStorage.getItem('counter');
+        const savedStartTime = localStorage.getItem('startTime');
+        if (savedCounter !== null && savedStartTime !== null) {
+            number = parseInt(savedCounter, 10);
+            stopwatchStartTime = parseInt(savedStartTime, 10);
+        } else {
+            stopwatchStartTime = Date.now(); // Якщо даних немає, встановлюємо поточний час
+        }
+    }
+
     // Функція для отримання даних з сервера
     async function fetchCounterData() {
-        try {
-            const response = await fetch('/counter'); // Запит до сервера
-            const data = await response.json();
-            number = data.counter;
-            stopwatchStartTime = data.startTime;
-            updateNumberAndTimer(); // Оновлюємо таймер і лічильник на основі отриманих даних
-        } catch (error) {
-            console.error('Помилка отримання даних:', error);
-        }
+        // Для цього прикладу не потрібні серверні запити, тому функцію залишаємо без змін
     }
 
     // Функція для оновлення лічильника на сервері
     async function updateCounterOnServer(newCounter) {
-        try {
-            await fetch('/counter', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ newCounter })
-            });
-        } catch (error) {
-            console.error('Помилка оновлення даних на сервері:', error);
-        }
+        // Для цього прикладу не потрібні серверні запити, тому функцію залишаємо без змін
     }
 
     // Оновлюємо лічильник і таймер на основі секундоміра
@@ -114,6 +115,9 @@
         }
 
         document.getElementById("stopwatch").innerText = `Секундомір: ${Math.floor(elapsedTime / 60000)}:${String(Math.floor(elapsedTime / 1000) % 60).padStart(2, '0')}`;
+
+        // Зберігаємо поточні дані в LocalStorage
+        saveToLocalStorage();
     }
 
     // Форматування часу у форматі mm:ss
@@ -127,13 +131,8 @@
     document.getElementById("lightning").addEventListener("click", () => {
         number = 0; // Скидаємо лічильник
         document.getElementById("counter").innerText = number;
-        updateCounterOnServer(number); // Оновлюємо значення на сервері
-
-        // Оновлюємо час запуску секундоміра
-        const currentTime = Date.now();
-        stopwatchStartTime = currentTime;
-        updateCounterOnServer(number); // Оновлюємо час на сервері
-        location.reload(); // Оновлюємо сторінку
+        stopwatchStartTime = Date.now(); // Скидаємо секундомір
+        saveToLocalStorage(); // Зберігаємо нові дані
     });
 
     // Редагування лічильника
@@ -141,16 +140,15 @@
         const newValue = parseInt(document.getElementById("counter").innerText);
         if (!isNaN(newValue) && newValue >= 0 && newValue <= maxNumber) {
             number = newValue;
-            updateCounterOnServer(number); // Оновлюємо значення на сервері
-            location.reload(); // Оновлюємо сторінку з новими даними
+            saveToLocalStorage(); // Зберігаємо зміни
         }
     });
 
     // Запуск секундоміра при завантаженні сторінки
     function startStopwatch() {
-        fetchCounterData().then(() => {
-            stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
-        });
+        loadFromLocalStorage(); // Завантажуємо дані з LocalStorage
+        updateNumberAndTimer();
+        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
     }
 
     // Старт секундоміра
