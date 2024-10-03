@@ -1,7 +1,7 @@
 {
-  "name": "Назва вашого додатка",
-  "short_name": "Коротка назва",
-  "start_url": "http://localhost:9898/Local/test.html?4B1DEFA8-86F9-4023-97C9-CB5B6A6CD3BF",
+  "name": "Energy Counter",
+  "short_name": "Energy Counter",
+  "start_url": "https://energy-tester.vercel.app",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
