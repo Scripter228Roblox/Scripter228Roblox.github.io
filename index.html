@@ -60,14 +60,14 @@
     <div id="timer">Наступне: 00:10</div>
     <div id="stopwatch">Секундомір: 199:50</div>
 
-    <!-- Кнопка для встановлення таймера -->
-    <button id="setTimerButton">Встановити таймер на 10 секунд до 100 енергії</button>
+    <!-- Кнопка для налаштування таймера -->
+    <button id="setTimerButton">Налаштувати таймер та секундомір</button>
 
     <script>
-    let number = 99; // Лічильник починається з 99
+    let number = 0; // Лічильник починається з 0
     const maxNumber = 100;
     const incrementInterval = 120000; // 2 хвилини
-    let stopwatchStartTime = Date.now() - (120 * 1000); // Секундомір починається з 199:50
+    let stopwatchStartTime = Date.now(); // Стартовий час для секундоміра
     let stopwatchInterval;
 
     // Функція для збереження даних в localStorage
@@ -84,7 +84,7 @@
             number = parseInt(savedCounter, 10);
             stopwatchStartTime = parseInt(savedStartTime, 10);
         } else {
-            stopwatchStartTime = Date.now() - (120 * 1000); // Якщо даних немає, встановлюємо стартовий час для секундоміра
+            stopwatchStartTime = Date.now(); // Якщо даних немає, встановлюємо стартовий час для секундоміра
         }
     }
 
@@ -106,7 +106,7 @@
     function updateNumberAndTimer() {
         const elapsedTime = Date.now() - stopwatchStartTime;
         const increments = Math.floor(elapsedTime / incrementInterval);
-        number = Math.min(increments + 99, maxNumber); // Лічильник починається з 99
+        number = increments; // Лічильник
 
         const timeToNextIncrement = incrementInterval - (elapsedTime % incrementInterval);
         const secondsToNextIncrement = Math.ceil(timeToNextIncrement / 1000);
@@ -168,19 +168,19 @@
         });
     }
 
-    // Встановлення таймера на 10 секунд до 100 енергії
+    // Налаштування таймера та секундоміра
     document.getElementById('setTimerButton').addEventListener('click', () => {
-        const secondsToNextIncrement = Math.ceil((incrementInterval - (Date.now() - stopwatchStartTime) % incrementInterval) / 1000);
-        const timeUntilNotification = Math.max(0, secondsToNextIncrement - 10); // 10 секунд до 100 енергії
+        number = 99; // Встановлюємо лічильник на 99
+        document.getElementById("counter").innerText = number;
 
-        // Встановлюємо таймер на 10 секунд до досягнення 100
+        // Встановлюємо таймер на 10 секунд до 100 енергії
         document.getElementById("timer").innerText = `Наступне: 00:10`;
-        
-        setTimeout(() => {
-            if (number < maxNumber) {
-                sendEnergyNotification(); // Надсилаємо повідомлення
-            }
-        }, timeUntilNotification * 1000); // Надсилання повідомлення через 10 секунд
+
+        // Встановлюємо секундомір на 199:50
+        stopwatchStartTime = Date.now() - (199 * 60 + 50) * 1000; // Встановлюємо стартовий час секундоміра
+
+        // Зберігаємо нові дані
+        saveToLocalStorage();
     });
     </script>
 
