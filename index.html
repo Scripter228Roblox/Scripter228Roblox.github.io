@@ -207,11 +207,11 @@
         navigator.clipboard.writeText(apiKey).then(() => {
             alert('API ключ скопійовано в буфер обміну!');
         }).catch(err => {
-            console.error('Не вдалося скопіювати API ключ: ', err);
+            console.error('Не вдалося скопіювати текст: ', err);
         });
     });
 
-    // Функція для обробки подвійного кліку
+    // Додано для розрізнення одиничного та подвійного кліків
     let clickTimeout;
     apiKeyDisplay.addEventListener('dblclick', (e) => {
         e.preventDefault(); // Запобігаємо стандартній поведінці
@@ -226,7 +226,7 @@
 
     apiKeyDisplay.addEventListener('click', () => {
         clickTimeout = setTimeout(() => {
-            // Код для одноразового кліку
+            // Код для одиничного кліка
         }, 500); // Час для визначення подвійного кліку
     });
 
