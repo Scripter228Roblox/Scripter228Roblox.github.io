@@ -67,7 +67,6 @@
     <!-- Відображення API ключа сесії -->
     <div id="api-key-display"></div>
 
-    <script src="api.js"></script>
     <script>
     let number = 0;
     const maxNumber = 100;
@@ -77,9 +76,9 @@
     let stopwatchInterval;
     let notificationSent = false;
     let notificationTimeout; // Таймаут для відправки повідомлення
-    let clickTimeout; // Таймаут для обробки кліків по API ключу
+    const apiUrl = "https://energy-tester.vercel.app/api/energy"; // Базовий URL API
 
-    // Отримання або генерація API ключа
+    // Отримання або генерація API ключа сесії
     function getApiKey() {
         let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
@@ -89,31 +88,28 @@
         return apiKey;
     }
 
+    // Функція для генерації простого API ключа
+    function generateApiKey() {
+        return 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+
     // Функція для відображення API ключа внизу сторінки
     function displayApiKey() {
         const apiKey = getApiKey();
         document.getElementById('api-key-display').innerText = `API Key: ${apiKey}`;
     }
 
-    // Функція для обробки одиночного та подвійного кліків по API ключу
-    function handleApiKeyClick() {
-        clearTimeout(clickTimeout); // Скасовуємо таймаут, якщо був запущений
-        clickTimeout = setTimeout(() => {
-            // Одиночний клік
-            const apiKey = getApiKey();
-            navigator.clipboard.writeText(apiKey).then(() => {
-                alert('API ключ скопійовано в буфер обміну!');
-            });
-        }, 500); // Таймаут для одиночного кліку
+    // Перевірка API ключа
+    async function checkApiKey() {
+        const apiKey = getApiKey();
+        const response = await fetch(`${apiUrl}?apiKey=${apiKey}`);
+        const data = await response.json();
 
-        // Подвійний клік
-        document.getElementById('api-key-display').addEventListener('dblclick', () => {
-            clearTimeout(clickTimeout); // Скасовуємо таймаут одиночного кліку
-            const newApiKey = generateApiKey(); // Генеруємо новий ключ
-            localStorage.setItem('apiKey', newApiKey); // Зберігаємо новий ключ
-            displayApiKey(); // Оновлюємо відображення API ключа
-            alert('Генеровано новий API ключ!');
-        }, { once: true }); // Додаємо обробник події лише один раз
+        if (data.success) {
+            console.log("API ключ працює:", data);
+        } else {
+            console.error("API ключ не валідний:", data.message);
+        }
     }
 
     // Функція для отримання даних з localStorage
@@ -197,28 +193,34 @@
     function sendNotification() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.ready.then(function(registration) {
-                registration.showNotification('Ваш лічильник досяг 100!', {
-                    body: 'Вітаємо!',
-                    icon: 'icon-192x192.png'
+                registration.showNotification('Досягнуто 100 енергії!', {
+                    body: 'Лічильник досяг 100!',
+                    icon: '/icon-192x192.png',
+                    badge: '/icon-192x192.png'
                 });
             });
         }
     }
 
-    // Запуск таймера для повідомлення
+    // Функція для запуску таймера на 200 хвилин
     function startNotificationTimer() {
+        clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
         notificationTimeout = setTimeout(() => {
-            notificationSent = false; // Дозволяємо відправку повідомлення знову
-            saveToLocalStorage(); // Зберігаємо стан
-        }, notificationDelay);
+            sendNotification();
+        }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
     }
 
-    // Оновлення значень
-    setInterval(updateNumberAndTimer, 1000); // Оновлення кожну секунду
+    // Запуск секундоміра при завантаженні сторінки
+    function startStopwatch() {
+        loadFromLocalStorage(); // Загружаємо стан з localStorage
+        stopwatchStartTime = Date.now(); // Запускаємо секундомір
+        setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
+        displayApiKey(); // Відображаємо API ключ
+        checkApiKey(); // Перевірка API ключа
+    }
 
-    // Відображення API ключа та обробка кліків
-    displayApiKey();
-    document.getElementById('api-key-display').addEventListener('click', handleApiKeyClick);
+    startStopwatch(); // Запускаємо при завантаженні сторінки
+
     </script>
 </body>
 </html>
