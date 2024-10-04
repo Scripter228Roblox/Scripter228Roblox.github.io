@@ -45,14 +45,19 @@
         }
         #api-key-display {
             position: fixed;
-            bottom: 10px;
+            bottom: 50px;
             background-color: #2c2c2e;
             padding: 10px;
             border-radius: 8px;
             font-size: 14px;
             color: #ffffff;
             opacity: 0.9;
-            cursor: pointer; /* Додаємо курсор для зручності */
+        }
+        #regenerate-key {
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 18px;
+            color: white;
         }
     </style>
 </head>
@@ -66,7 +71,10 @@
     <div id="stopwatch">Секундомір: 0:00</div>
 
     <!-- Відображення API ключа сесії -->
-    <div id="api-key-display"></div>
+    <div id="api-key-display">
+        <span id="api-key">API Key: </span>
+        <span id="regenerate-key">🔄</span> <!-- Кнопка для перезавантаження ключа -->
+    </div>
 
     <script>
     let number = 0;
@@ -77,9 +85,8 @@
     let stopwatchInterval;
     let notificationSent = false;
     let notificationTimeout; // Таймаут для відправки повідомлення
-    let lastClickTime = 0; // Змінна для відстеження часу останнього кліку
 
-    // Отримання або генерація API ключа
+    // Отримання або генерація API ключа сесії
     function getApiKey() {
         let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
@@ -97,7 +104,7 @@
     // Функція для відображення API ключа внизу сторінки
     function displayApiKey() {
         const apiKey = getApiKey();
-        document.getElementById('api-key-display').innerText = `API Key: ${apiKey}`;
+        document.getElementById('api-key').innerText = `API Key: ${apiKey}`;
     }
 
     // Функція для отримання даних з localStorage
@@ -198,42 +205,26 @@
         }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
     }
 
-    // Обробка подій для API ключа
-    const apiKeyDisplay = document.getElementById('api-key-display');
+    // Запуск секундоміра при завантаженні сторінки
+    function startStopwatch() {
+        loadFromLocalStorage(); // Завантажуємо дані з localStorage
+        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
+        startNotificationTimer(); // Запускаємо таймер для повідомлення
+        displayApiKey(); // Відображаємо API ключ
+    }
 
-    apiKeyDisplay.addEventListener('click', () => {
-        // Копіюємо API ключ в буфер обміну
-        const apiKey = getApiKey();
-        navigator.clipboard.writeText(apiKey).then(() => {
-            alert('API ключ скопійовано в буфер обміну!');
-        }).catch(err => {
-            console.error('Не вдалося скопіювати текст: ', err);
-        });
-    });
+    // Генерація нового API ключ
 
-    // Додано для розрізнення одиничного та подвійного кліків
-    let clickTimeout;
-    apiKeyDisplay.addEventListener('dblclick', (e) => {
-        e.preventDefault(); // Запобігаємо стандартній поведінці
-
-        clearTimeout(clickTimeout); // Очищаємо тайм-аут
-
-        // Генеруємо новий API ключ
+а
+    document.getElementById('regenerate-key').addEventListener('click', () => {
         const newApiKey = generateApiKey();
-        localStorage.setItem('apiKey', newApiKey); // Зберігаємо новий ключ
-        displayApiKey(); // Оновлюємо відображення ключа
+        localStorage.setItem('apiKey', newApiKey); // Зберігаємо новий ключ в localStorage
+        displayApiKey(); // Оновлюємо відображення API ключа
     });
 
-    apiKeyDisplay.addEventListener('click', () => {
-        clickTimeout = setTimeout(() => {
-            // Код для одиничного кліка
-        }, 500); // Час для визначення подвійного кліку
-    });
-
-    // Запускаємо інтервал для оновлення таймера
-    loadFromLocalStorage();
-    displayApiKey();
-    setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
+    // Починаємо секундомір
+    startStopwatch();
     </script>
+
 </body>
 </html>
