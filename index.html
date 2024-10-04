@@ -79,7 +79,7 @@
     let notificationTimeout; // Таймаут для відправки повідомлення
     let lastClickTime = 0; // Змінна для відстеження часу останнього кліку
 
-    // Отримання або генерація API ключа сесії
+    // Отримання або генерація API ключа
     function getApiKey() {
         let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
@@ -211,10 +211,8 @@
         });
     });
 
-    // Функція для обробки подвій
-
-ного кліка
-    let clickTimeout; // Змінна для тайм-ауту кліку
+    // Функція для обробки подвійного кліку
+    let clickTimeout;
     apiKeyDisplay.addEventListener('dblclick', (e) => {
         e.preventDefault(); // Запобігаємо стандартній поведінці
 
@@ -228,7 +226,7 @@
 
     apiKeyDisplay.addEventListener('click', () => {
         clickTimeout = setTimeout(() => {
-            // Код для одноразового кліку не виконується, якщо це подвійний клік
+            // Код для одноразового кліку
         }, 500); // Час для визначення подвійного кліку
     });
 
