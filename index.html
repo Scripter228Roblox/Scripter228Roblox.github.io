@@ -43,6 +43,16 @@
         .hidden {
             display: none;
         }
+        #api-key-display {
+            position: fixed;
+            bottom: 10px;
+            background-color: #2c2c2e;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #ffffff;
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +64,9 @@
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
+    <!-- Відображення API ключа сесії -->
+    <div id="api-key-display"></div>
+
     <script>
     let number = 0;
     const maxNumber = 100;
@@ -63,6 +76,27 @@
     let stopwatchInterval;
     let notificationSent = false;
     let notificationTimeout; // Таймаут для відправки повідомлення
+
+    // Отримання або генерація API ключа сесії
+    function getApiKey() {
+        let apiKey = sessionStorage.getItem('apiKey');
+        if (!apiKey) {
+            apiKey = generateApiKey(); // Генерація нового ключа, якщо немає існуючого
+            sessionStorage.setItem('apiKey', apiKey);
+        }
+        return apiKey;
+    }
+
+    // Функція для генерації простого API ключа
+    function generateApiKey() {
+        return 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+
+    // Функція для відображення API ключа внизу сторінки
+    function displayApiKey() {
+        const apiKey = getApiKey();
+        document.getElementById('api-key-display').innerText = `API Key: ${apiKey}`;
+    }
 
     // Функція для отримання даних з localStorage
     function loadFromLocalStorage() {
@@ -167,6 +201,7 @@
         loadFromLocalStorage(); // Завантажуємо дані з localStorage
         stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
         startNotificationTimer(); // Запускаємо таймер для повідомлення
+        displayApiKey(); // Відображаємо API ключ
     }
 
     // Старт секундоміра
