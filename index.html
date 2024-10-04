@@ -45,19 +45,29 @@
         }
         #api-key-display {
             position: fixed;
-            bottom: 50px;
+            bottom: 10px;
             background-color: #2c2c2e;
             padding: 10px;
             border-radius: 8px;
             font-size: 14px;
             color: #ffffff;
             opacity: 0.9;
+            cursor: pointer; /* Додаємо курсор для зручності */
+            display: flex; /* Використовуємо flex для вирівнювання кнопки і ключа */
+            align-items: center; /* Центруємо вертикально */
         }
-        #regenerate-key {
+        #regenerate-button {
+            margin-left: 10px; /* Відстань між ключем і кнопкою */
             cursor: pointer;
-            margin-left: 10px;
-            font-size: 18px;
-            color: white;
+            background-color: #007bff; /* Колір фону кнопки */
+            color: white; /* Колір тексту кнопки */
+            border: none; /* Без рамки */
+            padding: 5px 10px; /* Внутрішні відступи кнопки */
+            border-radius: 5px; /* Закруглені краї кнопки */
+            transition: background-color 0.3s; /* Ефект переходу кольору */
+        }
+        #regenerate-button:hover {
+            background-color: #0056b3; /* Темніший колір при наведенні */
         }
     </style>
 </head>
@@ -70,10 +80,10 @@
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
-    <!-- Відображення API ключа сесії -->
+    <!-- Відображення API ключа с кнопкою перезавантаження -->
     <div id="api-key-display">
         <span id="api-key">API Key: </span>
-        <span id="regenerate-key">🔄</span> <!-- Кнопка для перезавантаження ключа -->
+        <button id="regenerate-button">🔄</button>
     </div>
 
     <script>
@@ -86,7 +96,7 @@
     let notificationSent = false;
     let notificationTimeout; // Таймаут для відправки повідомлення
 
-    // Отримання або генерація API ключа сесії
+    // Отримання або генерація API ключа
     function getApiKey() {
         let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
@@ -197,34 +207,25 @@
         }
     }
 
-    // Функція для запуску таймера на 200 хвилин
+    // Функція для запуску таймера повідомлення
     function startNotificationTimer() {
-        clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
         notificationTimeout = setTimeout(() => {
-            sendNotification();
-        }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
+            notificationSent = false; // Дозволяємо повторну відправку повідомлення через 200 хвилин
+            saveToLocalStorage(); // Зберігаємо стан
+        }, notificationDelay);
     }
 
-    // Запуск секундоміра при завантаженні сторінки
-    function startStopwatch() {
-        loadFromLocalStorage(); // Завантажуємо дані з localStorage
-        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
-        startNotificationTimer(); // Запускаємо таймер для повідомлення
-        displayApiKey(); // Відображаємо API ключ
-    }
-
-    // Генерація нового API ключ
-
-а
-    document.getElementById('regenerate-key').addEventListener('click', () => {
-        const newApiKey = generateApiKey();
-        localStorage.setItem('apiKey', newApiKey); // Зберігаємо новий ключ в localStorage
-        displayApiKey(); // Оновлюємо відображення API ключа
+    // Додавання обробника подій на кнопку генерації нового API ключа
+    document.getElementById('regenerate-button').addEventListener('click', () => {
+        const newApiKey = generateApiKey(); // Генеруємо новий ключ
+        localStorage.setItem('apiKey', newApiKey); // Зберігаємо новий ключ
+        displayApiKey(); // Оновлюємо відображення ключа
     });
 
-    // Починаємо секундомір
-    startStopwatch();
+    // Запускаємо інтервал для оновлення таймера
+    loadFromLocalStorage();
+    displayApiKey();
+    setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
     </script>
-
 </body>
 </html>
