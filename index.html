@@ -67,6 +67,7 @@
     <!-- Відображення API ключа сесії -->
     <div id="api-key-display"></div>
 
+    <script src="api.js"></script>
     <script>
     let number = 0;
     const maxNumber = 100;
@@ -78,7 +79,7 @@
     let notificationTimeout; // Таймаут для відправки повідомлення
     let clickTimeout; // Таймаут для обробки кліків по API ключу
 
-    // Отримання або генерація API ключа сесії
+    // Отримання або генерація API ключа
     function getApiKey() {
         let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
@@ -86,11 +87,6 @@
             localStorage.setItem('apiKey', apiKey); // Збереження в localStorage
         }
         return apiKey;
-    }
-
-    // Функція для генерації простого API ключа
-    function generateApiKey() {
-        return 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 
     // Функція для відображення API ключа внизу сторінки
