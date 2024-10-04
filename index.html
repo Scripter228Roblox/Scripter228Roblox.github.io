@@ -79,10 +79,10 @@
 
     // Отримання або генерація API ключа сесії
     function getApiKey() {
-        let apiKey = sessionStorage.getItem('apiKey');
+        let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
             apiKey = generateApiKey(); // Генерація нового ключа, якщо немає існуючого
-            sessionStorage.setItem('apiKey', apiKey);
+            localStorage.setItem('apiKey', apiKey); // Збереження в localStorage
         }
         return apiKey;
     }
