@@ -52,6 +52,7 @@
             font-size: 14px;
             color: #ffffff;
             opacity: 0.9;
+            cursor: pointer; /* Додаємо курсор для зручності */
         }
     </style>
 </head>
@@ -76,7 +77,7 @@
     let stopwatchInterval;
     let notificationSent = false;
     let notificationTimeout; // Таймаут для відправки повідомлення
-    let apiKeyClickTimeout; // Таймаут для подвійного кліку
+    let lastClickTime = 0; // Змінна для відстеження часу останнього кліку
 
     // Отримання або генерація API ключа сесії
     function getApiKey() {
@@ -97,34 +98,6 @@
     function displayApiKey() {
         const apiKey = getApiKey();
         document.getElementById('api-key-display').innerText = `API Key: ${apiKey}`;
-    }
-
-    // Функція для копіювання API ключа в буфер обміну
-    function copyApiKey() {
-        const apiKey = getApiKey();
-        navigator.clipboard.writeText(apiKey).then(() => {
-            alert("API ключ скопійовано!");
-        });
-    }
-
-    // Обробка кліків на API ключ
-    function handleApiKeyClick() {
-        if (apiKeyClickTimeout) {
-            clearTimeout(apiKeyClickTimeout);
-            generateNewApiKey();
-        } else {
-            apiKeyClickTimeout = setTimeout(() => {
-                copyApiKey();
-                apiKeyClickTimeout = null;
-            }, 500); // Час для подвійного кліка
-        }
-    }
-
-    // Генерація нового API ключа
-    function generateNewApiKey() {
-        const newApiKey = generateApiKey();
-        localStorage.setItem('apiKey', newApiKey);
-        displayApiKey();
     }
 
     // Функція для отримання даних з localStorage
@@ -219,20 +192,50 @@
 
     // Функція для запуску таймера на 200 хвилин
     function startNotificationTimer() {
-        clearTimeout
-
-(notificationTimeout); // Очищаємо попередній таймер
+        clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
         notificationTimeout = setTimeout(() => {
-            notificationSent = false; // Дозволяємо відправку повідомлення знову через 200 хвилин
-            saveToLocalStorage(); // Зберігаємо стан
-        }, notificationDelay);
+            sendNotification();
+        }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
     }
 
-    // Запуск таймера для оновлення лічильника і таймера
-    setInterval(updateNumberAndTimer, 1000);
-    loadFromLocalStorage(); // Завантаження даних з localStorage
-    displayApiKey(); // Відображення API ключа
-    document.getElementById('api-key-display').addEventListener('click', handleApiKeyClick); // Обробка кліків по API ключу
+    // Обробка подій для API ключа
+    const apiKeyDisplay = document.getElementById('api-key-display');
+
+    apiKeyDisplay.addEventListener('click', () => {
+        // Копіюємо API ключ в буфер обміну
+        const apiKey = getApiKey();
+        navigator.clipboard.writeText(apiKey).then(() => {
+            alert('API ключ скопійовано в буфер обміну!');
+        }).catch(err => {
+            console.error('Не вдалося скопіювати API ключ: ', err);
+        });
+    });
+
+    // Функція для обробки подвій
+
+ного кліка
+    let clickTimeout; // Змінна для тайм-ауту кліку
+    apiKeyDisplay.addEventListener('dblclick', (e) => {
+        e.preventDefault(); // Запобігаємо стандартній поведінці
+
+        clearTimeout(clickTimeout); // Очищаємо тайм-аут
+
+        // Генеруємо новий API ключ
+        const newApiKey = generateApiKey();
+        localStorage.setItem('apiKey', newApiKey); // Зберігаємо новий ключ
+        displayApiKey(); // Оновлюємо відображення ключа
+    });
+
+    apiKeyDisplay.addEventListener('click', () => {
+        clickTimeout = setTimeout(() => {
+            // Код для одноразового кліку не виконується, якщо це подвійний клік
+        }, 500); // Час для визначення подвійного кліку
+    });
+
+    // Запускаємо інтервал для оновлення таймера
+    loadFromLocalStorage();
+    displayApiKey();
+    setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
     </script>
 </body>
 </html>
