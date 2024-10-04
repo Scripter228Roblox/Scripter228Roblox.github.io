@@ -64,7 +64,6 @@
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
-    <!-- Відображення API ключа сесії -->
     <div id="api-key-display"></div>
 
     <script>
@@ -75,31 +74,27 @@
     let stopwatchStartTime;
     let stopwatchInterval;
     let notificationSent = false;
-    let notificationTimeout; // Таймаут для відправки повідомлення
-    const apiUrl = "https://energy-tester.vercel.app/api/energy"; // Базовий URL API
+    let notificationTimeout; 
+    const apiUrl = "https://energy-tester.vercel.app/api/energy"; 
 
-    // Отримання або генерація API ключа сесії
     function getApiKey() {
-        let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
+        let apiKey = localStorage.getItem('apiKey'); 
         if (!apiKey) {
-            apiKey = generateApiKey(); // Генерація нового ключа, якщо немає існуючого
-            localStorage.setItem('apiKey', apiKey); // Збереження в localStorage
+            apiKey = generateApiKey(); 
+            localStorage.setItem('apiKey', apiKey); 
         }
         return apiKey;
     }
 
-    // Функція для генерації простого API ключа
     function generateApiKey() {
         return 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 
-    // Функція для відображення API ключа внизу сторінки
     function displayApiKey() {
         const apiKey = getApiKey();
         document.getElementById('api-key-display').innerText = `API Key: ${apiKey}`;
     }
 
-    // Перевірка API ключа
     async function checkApiKey() {
         const apiKey = getApiKey();
         const response = await fetch(`${apiUrl}?apiKey=${apiKey}`);
@@ -112,12 +107,10 @@
         }
     }
 
-    // Функція для отримання даних з localStorage
     function loadFromLocalStorage() {
         const savedNumber = localStorage.getItem('counter');
         const savedStartTime = localStorage.getItem('startTime');
         const savedNotificationSent = localStorage.getItem('notificationSent');
-        const savedFirstRun = localStorage.getItem('firstRun');
 
         if (savedNumber) {
             number = parseInt(savedNumber, 10);
@@ -127,8 +120,7 @@
         if (savedStartTime) {
             stopwatchStartTime = parseInt(savedStartTime, 10);
         } else {
-            stopwatchStartTime = Date.now(); // Якщо це перший запуск
-            localStorage.setItem('firstRun', 'true'); // Зберігаємо, що це перший запуск
+            stopwatchStartTime = Date.now(); 
         }
 
         if (savedNotificationSent) {
@@ -136,14 +128,12 @@
         }
     }
 
-    // Функція для збереження даних у localStorage
     function saveToLocalStorage() {
         localStorage.setItem('counter', number);
         localStorage.setItem('startTime', stopwatchStartTime);
         localStorage.setItem('notificationSent', notificationSent.toString());
     }
 
-    // Оновлюємо лічильник і таймер на основі секундоміра
     function updateNumberAndTimer() {
         const elapsedTime = Date.now() - stopwatchStartTime;
         const increments = Math.floor(elapsedTime / incrementInterval);
@@ -157,12 +147,11 @@
             document.getElementById("timer").classList.add("hidden");
             document.getElementById("stopwatch").classList.add("hidden");
 
-            // Відправка повідомлення лише один раз, коли досягається 100
             if (!notificationSent) {
-                clearTimeout(notificationTimeout); // Скасовуємо таймаут повідомлення
+                clearTimeout(notificationTimeout); 
                 sendNotification();
-                notificationSent = true; // Змінюємо флаг, щоб уникнути повторної відправки
-                saveToLocalStorage(); // Зберігаємо стан
+                notificationSent = true; 
+                saveToLocalStorage(); 
             }
         } else {
             document.getElementById("timer").classList.remove("hidden");
@@ -170,30 +159,25 @@
         }
 
         document.getElementById("stopwatch").innerText = `Секундомір: ${Math.floor(elapsedTime / 60000)}:${String(Math.floor(elapsedTime / 1000) % 60).padStart(2, '0')}`;
-        saveToLocalStorage(); // Зберігаємо стан кожного разу при оновленні
+        saveToLocalStorage(); 
     }
 
-    // Форматування часу у форматі mm:ss
     function formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${String(minutes).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
-    // Скидання лічильника
     document.getElementById("lightning").addEventListener("click", () => {
-        number = 0; // Скидаємо лічильник
+        number = 0; 
         document.getElementById("counter").innerText = number;
 
-        // Оновлюємо час запуску секундоміра
         stopwatchStartTime = Date.now();
-        notificationSent = false; // Дозволяємо відправку повідомлення знову при досягненні 100
-        startNotificationTimer(); // Перезапускаємо таймер повідомлення
-        saveToLocalStorage(); // Зберігаємо стан
-        location.reload(); // Оновлюємо сторінку
+        notificationSent = false; 
+        startNotificationTimer(); 
+        saveToLocalStorage(); 
     });
 
-    // Відправка повідомлення
     function sendNotification() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.ready.then(function(registration) {
@@ -206,24 +190,22 @@
         }
     }
 
-    // Функція для запуску таймера на 200 хвилин
     function startNotificationTimer() {
-        clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
+        clearTimeout(notificationTimeout); 
         notificationTimeout = setTimeout(() => {
-            notificationSent = false; // Скидаємо флаг, щоб дозволити нові повідомлення
+            notificationSent = false; 
         }, notificationDelay);
     }
 
-    // Запуск секундоміра та перевірки API ключа
     function startStopwatch() {
-        loadFromLocalStorage(); // Загружаємо стан з localStorage
-        stopwatchStartTime = Date.now(); // Запускаємо секундомір
-        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
-        displayApiKey(); // Відображаємо API ключ
-        checkApiKey(); // Перевірка API ключа
+        loadFromLocalStorage(); 
+        stopwatchStartTime = Date.now(); 
+        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); 
+        displayApiKey(); 
+        checkApiKey(); 
     }
 
-    startStopwatch(); // Запускаємо при завантаженні сторінки
+    startStopwatch(); 
 
     </script>
 </body>
