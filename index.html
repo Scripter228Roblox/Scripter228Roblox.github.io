@@ -72,7 +72,7 @@
     const maxNumber = 100;
     const incrementInterval = 120000; // 2 хвилини
     const notificationDelay = 200 * 60 * 1000; // 200 хвилин у мілісекундах
-    let stopwatchStartTime = Date.now();
+    let stopwatchStartTime;
     let stopwatchInterval;
     let notificationSent = false;
     let notificationTimeout; // Таймаут для відправки повідомлення
@@ -117,6 +117,7 @@
         const savedNumber = localStorage.getItem('counter');
         const savedStartTime = localStorage.getItem('startTime');
         const savedNotificationSent = localStorage.getItem('notificationSent');
+        const savedFirstRun = localStorage.getItem('firstRun');
 
         if (savedNumber) {
             number = parseInt(savedNumber, 10);
@@ -125,6 +126,9 @@
 
         if (savedStartTime) {
             stopwatchStartTime = parseInt(savedStartTime, 10);
+        } else {
+            stopwatchStartTime = Date.now(); // Якщо це перший запуск
+            localStorage.setItem('firstRun', 'true'); // Зберігаємо, що це перший запуск
         }
 
         if (savedNotificationSent) {
@@ -206,15 +210,15 @@
     function startNotificationTimer() {
         clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
         notificationTimeout = setTimeout(() => {
-            sendNotification();
-        }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
+            notificationSent = false; // Скидаємо флаг, щоб дозволити нові повідомлення
+        }, notificationDelay);
     }
 
-    // Запуск секундоміра при завантаженні сторінки
+    // Запуск секундоміра та перевірки API ключа
     function startStopwatch() {
         loadFromLocalStorage(); // Загружаємо стан з localStorage
         stopwatchStartTime = Date.now(); // Запускаємо секундомір
-        setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
+        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
         displayApiKey(); // Відображаємо API ключ
         checkApiKey(); // Перевірка API ключа
     }
