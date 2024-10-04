@@ -64,6 +64,7 @@
     <div id="timer">Наступне: 2:00</div>
     <div id="stopwatch">Секундомір: 0:00</div>
 
+    <!-- Відображення API ключа сесії -->
     <div id="api-key-display"></div>
 
     <script>
@@ -71,42 +72,38 @@
     const maxNumber = 100;
     const incrementInterval = 120000; // 2 хвилини
     const notificationDelay = 200 * 60 * 1000; // 200 хвилин у мілісекундах
-    let stopwatchStartTime;
+    let stopwatchStartTime = Date.now();
     let stopwatchInterval;
     let notificationSent = false;
-    let notificationTimeout; 
-    const apiUrl = "https://energy-tester.vercel.app/api/energy"; 
+    let notificationTimeout; // Таймаут для відправки повідомлення
 
-    function getApiKey() {
-        let apiKey = localStorage.getItem('apiKey'); 
+    // Отримання або генерація API ключа сесії
+    async function getApiKey() {
+        let apiKey = localStorage.getItem('apiKey'); // Використовуємо localStorage для постійного зберігання
         if (!apiKey) {
-            apiKey = generateApiKey(); 
-            localStorage.setItem('apiKey', apiKey); 
+            apiKey = await generateApiKey(); // Генерація нового ключа, якщо немає існуючого
+            localStorage.setItem('apiKey', apiKey); // Збереження в localStorage
         }
         return apiKey;
     }
 
-    function generateApiKey() {
-        return 'api_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // Функція для генерації простого API ключа
+    async function generateApiKey() {
+        const response = await fetch('https://example.com/api/generate-key', { method: 'POST' }); // Заміни на свій API
+        if (!response.ok) {
+            throw new Error('Failed to generate API key');
+        }
+        const data = await response.json();
+        return data.apiKey; // Припускаємо, що API повертає об'єкт з полем apiKey
     }
 
-    function displayApiKey() {
-        const apiKey = getApiKey();
+    // Функція для відображення API ключа внизу сторінки
+    async function displayApiKey() {
+        const apiKey = await getApiKey();
         document.getElementById('api-key-display').innerText = `API Key: ${apiKey}`;
     }
 
-    async function checkApiKey() {
-        const apiKey = getApiKey();
-        const response = await fetch(`${apiUrl}?apiKey=${apiKey}`);
-        const data = await response.json();
-
-        if (data.success) {
-            console.log("API ключ працює:", data);
-        } else {
-            console.error("API ключ не валідний:", data.message);
-        }
-    }
-
+    // Функція для отримання даних з localStorage
     function loadFromLocalStorage() {
         const savedNumber = localStorage.getItem('counter');
         const savedStartTime = localStorage.getItem('startTime');
@@ -119,8 +116,6 @@
 
         if (savedStartTime) {
             stopwatchStartTime = parseInt(savedStartTime, 10);
-        } else {
-            stopwatchStartTime = Date.now(); 
         }
 
         if (savedNotificationSent) {
@@ -128,12 +123,14 @@
         }
     }
 
+    // Функція для збереження даних у localStorage
     function saveToLocalStorage() {
         localStorage.setItem('counter', number);
         localStorage.setItem('startTime', stopwatchStartTime);
         localStorage.setItem('notificationSent', notificationSent.toString());
     }
 
+    // Оновлюємо лічильник і таймер на основі секундоміра
     function updateNumberAndTimer() {
         const elapsedTime = Date.now() - stopwatchStartTime;
         const increments = Math.floor(elapsedTime / incrementInterval);
@@ -147,11 +144,12 @@
             document.getElementById("timer").classList.add("hidden");
             document.getElementById("stopwatch").classList.add("hidden");
 
+            // Відправка повідомлення лише один раз, коли досягається 100
             if (!notificationSent) {
-                clearTimeout(notificationTimeout); 
+                clearTimeout(notificationTimeout); // Скасовуємо таймаут повідомлення
                 sendNotification();
-                notificationSent = true; 
-                saveToLocalStorage(); 
+                notificationSent = true; // Змінюємо флаг, щоб уникнути повторної відправки
+                saveToLocalStorage(); // Зберігаємо стан
             }
         } else {
             document.getElementById("timer").classList.remove("hidden");
@@ -159,25 +157,30 @@
         }
 
         document.getElementById("stopwatch").innerText = `Секундомір: ${Math.floor(elapsedTime / 60000)}:${String(Math.floor(elapsedTime / 1000) % 60).padStart(2, '0')}`;
-        saveToLocalStorage(); 
+        saveToLocalStorage(); // Зберігаємо стан кожного разу при оновленні
     }
 
+    // Форматування часу у форматі mm:ss
     function formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${String(minutes).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
+    // Скидання лічильника
     document.getElementById("lightning").addEventListener("click", () => {
-        number = 0; 
+        number = 0; // Скидаємо лічильник
         document.getElementById("counter").innerText = number;
 
+        // Оновлюємо час запуску секундоміра
         stopwatchStartTime = Date.now();
-        notificationSent = false; 
-        startNotificationTimer(); 
-        saveToLocalStorage(); 
+        notificationSent = false; // Дозволяємо відправку повідомлення знову при досягненні 100
+        startNotificationTimer(); // Перезапускаємо таймер повідомлення
+        saveToLocalStorage(); // Зберігаємо стан
+        location.reload(); // Оновлюємо сторінку
     });
 
+    // Відправка повідомлення
     function sendNotification() {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.ready.then(function(registration) {
@@ -190,23 +193,23 @@
         }
     }
 
+    // Функція для запуску таймера на 200 хвилин
     function startNotificationTimer() {
-        clearTimeout(notificationTimeout); 
+        clearTimeout(notificationTimeout); // Скасовуємо попередній таймаут
         notificationTimeout = setTimeout(() => {
-            notificationSent = false; 
-        }, notificationDelay);
+            sendNotification();
+        }, notificationDelay); // Встановлюємо новий таймаут на 200 хвилин
     }
 
-    function startStopwatch() {
-        loadFromLocalStorage(); 
-        stopwatchStartTime = Date.now(); 
-        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); 
-        displayApiKey(); 
-        checkApiKey(); 
+    // Запуск секундоміра при завантаженні сторінки
+    async function startStopwatch() {
+        loadFromLocalStorage(); // Завантажуємо дані з localStorage
+        stopwatchInterval = setInterval(updateNumberAndTimer, 1000); // Оновлюємо кожну секунду
+        startNotificationTimer(); // Запускаємо таймер для повідомлення
+        await displayApiKey(); // Відображаємо API ключ
     }
 
-    startStopwatch(); 
-
+    startStopwatch();
     </script>
 </body>
 </html>
