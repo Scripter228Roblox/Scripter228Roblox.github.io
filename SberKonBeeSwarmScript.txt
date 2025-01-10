@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
 
 -- Створення GUI
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -7,25 +8,43 @@ local MenuFrame = Instance.new("Frame", ScreenGui)
 local OpenButton = Instance.new("TextButton", ScreenGui)
 local TeleportButton = Instance.new("TextButton", MenuFrame)
 local SaveCoordsButton = Instance.new("TextButton", MenuFrame)
+local FixedTeleportButton = Instance.new("TextButton", MenuFrame)
 local RespawnCheckbox = Instance.new("TextButton", MenuFrame)
 local CoordinatesLabel = Instance.new("TextLabel", MenuFrame)
+local CloseButton = Instance.new("TextButton", MenuFrame)
 
 -- Змінні
 local savedPosition = nil
 local respawnEnabled = false
+local isDragging = false
+local dragStart, startPos
 
 -- Налаштування меню
-MenuFrame.Size = UDim2.new(0, 250, 0, 150)
-MenuFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
+MenuFrame.Size = UDim2.new(0, 300, 0, 200)
+MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 MenuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MenuFrame.Visible = true
+MenuFrame.BorderSizePixel = 0
+MenuFrame.ClipsDescendants = true
+MenuFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MenuFrame.BackgroundTransparency = 0.2
+
+-- Закруглені кути
+local UICorner = Instance.new("UICorner", MenuFrame)
+UICorner.CornerRadius = UDim.new(0, 10)
 
 -- Налаштування кнопки відкриття
 OpenButton.Size = UDim2.new(0, 50, 0, 50)
-OpenButton.Position = UDim2.new(0, 0, 0.5, -25)
+OpenButton.Position = UDim2.new(0.5, -25, 0.5, -150)
 OpenButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-OpenButton.Text = "O"
-OpenButton.Visible = false
+OpenButton.Text = "+"
+OpenButton.Visible = true
+
+-- Налаштування кнопки закриття
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+CloseButton.Text = "X"
 
 -- Налаштування кнопки телепорту
 TeleportButton.Size = UDim2.new(1, -10, 0, 30)
@@ -39,39 +58,36 @@ SaveCoordsButton.Position = UDim2.new(0, 5, 0, 40)
 SaveCoordsButton.BackgroundColor3 = Color3.fromRGB(100, 100, 150)
 SaveCoordsButton.Text = "Зберегти координати"
 
+-- Налаштування кнопки телепорту на фіксовані координати
+FixedTeleportButton.Size = UDim2.new(1, -10, 0, 30)
+FixedTeleportButton.Position = UDim2.new(0, 5, 0, 75)
+FixedTeleportButton.BackgroundColor3 = Color3.fromRGB(100, 150, 100)
+FixedTeleportButton.Text = "Телепорт на (X: -150.1, Y: 439.5, Z: -359.7)"
+
 -- Налаштування галочки для респавну
 RespawnCheckbox.Size = UDim2.new(1, -10, 0, 30)
-RespawnCheckbox.Position = UDim2.new(0, 5, 0, 75)
+RespawnCheckbox.Position = UDim2.new(0, 5, 0, 110)
 RespawnCheckbox.BackgroundColor3 = Color3.fromRGB(150, 100, 100)
 RespawnCheckbox.Text = "Респавн тут: Вимкнено"
 
 -- Налаштування тексту з координатами
 CoordinatesLabel.Size = UDim2.new(1, -10, 0, 20)
-CoordinatesLabel.Position = UDim2.new(0, 5, 0, 110)
+CoordinatesLabel.Position = UDim2.new(0, 5, 0, 145)
 CoordinatesLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 CoordinatesLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 CoordinatesLabel.Text = "Координати: (X: 0, Y: 0, Z: 0)"
 CoordinatesLabel.TextScaled = true
 
--- Логіка відкриття/закриття меню
-local function ToggleMenu()
-    if MenuFrame.Visible then
-        MenuFrame.Visible = false
-        OpenButton.Visible = true
-    else
-        MenuFrame.Visible = true
-        OpenButton.Visible = false
-    end
-end
-
--- Закриття меню
-MenuFrame.MouseLeave:Connect(function()
-    ToggleMenu()
+-- Логіка відкриття меню
+OpenButton.MouseButton1Click:Connect(function()
+    MenuFrame.Visible = true
+    OpenButton.Visible = false
 end)
 
--- Клік по кнопці відкриття
-OpenButton.MouseButton1Click:Connect(function()
-    ToggleMenu()
+-- Логіка закриття меню
+CloseButton.MouseButton1Click:Connect(function()
+    MenuFrame.Visible = false
+    OpenButton.Visible = true
 end)
 
 -- Логіка телепорту
@@ -89,6 +105,15 @@ TeleportButton.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Телепорт на фіксовані координати
+FixedTeleportButton.MouseButton1Click:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(-150.1, 439.5, -359.7))
+    else
+        warn("Ваш персонаж не знайдений.")
+    end
+end)
+
 -- Оновлення координат
 game:GetService("RunService").RenderStepped:Connect(function()
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
@@ -97,25 +122,24 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
--- Збереження координат
-SaveCoordsButton.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
-        print("Координати збережено:", savedPosition)
-    else
-        warn("Ваш персонаж не знайдений.")
+-- Переміщення меню
+MenuFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDragging = true
+        dragStart = input.Position
+        startPos = MenuFrame.Position
     end
 end)
 
--- Увімкнення/вимкнення респавну
-RespawnCheckbox.MouseButton1Click:Connect(function()
-    respawnEnabled = not respawnEnabled
-    RespawnCheckbox.Text = respawnEnabled and "Респавн тут: Увімкнено" or "Респавн тут: Вимкнено"
+MenuFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDragging = false
+    end
 end)
 
--- Логіка респавну
-LocalPlayer.CharacterAdded:Connect(function(character)
-    if respawnEnabled and savedPosition then
-        character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
+UserInputService.InputChanged:Connect(function(input)
+    if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        MenuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
