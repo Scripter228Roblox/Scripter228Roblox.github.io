@@ -6,10 +6,17 @@ local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 local MenuFrame = Instance.new("Frame", ScreenGui)
 local OpenButton = Instance.new("TextButton", ScreenGui)
 local TeleportButton = Instance.new("TextButton", MenuFrame)
+local SaveCoordsButton = Instance.new("TextButton", MenuFrame)
+local RespawnCheckbox = Instance.new("TextButton", MenuFrame)
+local CoordinatesLabel = Instance.new("TextLabel", MenuFrame)
+
+-- Змінні
+local savedPosition = nil
+local respawnEnabled = false
 
 -- Налаштування меню
-MenuFrame.Size = UDim2.new(0, 200, 0, 100)
-MenuFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
+MenuFrame.Size = UDim2.new(0, 250, 0, 150)
+MenuFrame.Position = UDim2.new(0.5, -125, 0.5, -75)
 MenuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MenuFrame.Visible = true
 
@@ -25,6 +32,26 @@ TeleportButton.Size = UDim2.new(1, -10, 0, 30)
 TeleportButton.Position = UDim2.new(0, 5, 0, 5)
 TeleportButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 TeleportButton.Text = "Телепорт до SberKon"
+
+-- Налаштування кнопки збереження координат
+SaveCoordsButton.Size = UDim2.new(1, -10, 0, 30)
+SaveCoordsButton.Position = UDim2.new(0, 5, 0, 40)
+SaveCoordsButton.BackgroundColor3 = Color3.fromRGB(100, 100, 150)
+SaveCoordsButton.Text = "Зберегти координати"
+
+-- Налаштування галочки для респавну
+RespawnCheckbox.Size = UDim2.new(1, -10, 0, 30)
+RespawnCheckbox.Position = UDim2.new(0, 5, 0, 75)
+RespawnCheckbox.BackgroundColor3 = Color3.fromRGB(150, 100, 100)
+RespawnCheckbox.Text = "Респавн тут: Вимкнено"
+
+-- Налаштування тексту з координатами
+CoordinatesLabel.Size = UDim2.new(1, -10, 0, 20)
+CoordinatesLabel.Position = UDim2.new(0, 5, 0, 110)
+CoordinatesLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+CoordinatesLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+CoordinatesLabel.Text = "Координати: (X: 0, Y: 0, Z: 0)"
+CoordinatesLabel.TextScaled = true
 
 -- Логіка відкриття/закриття меню
 local function ToggleMenu()
@@ -59,5 +86,36 @@ TeleportButton.MouseButton1Click:Connect(function()
         end
     else
         warn("Гравець SberKon не знайдений або не завантажений.")
+    end
+end)
+
+-- Оновлення координат
+game:GetService("RunService").RenderStepped:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local pos = LocalPlayer.Character.HumanoidRootPart.Position
+        CoordinatesLabel.Text = string.format("Координати: (X: %.1f, Y: %.1f, Z: %.1f)", pos.X, pos.Y, pos.Z)
+    end
+end)
+
+-- Збереження координат
+SaveCoordsButton.MouseButton1Click:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
+        print("Координати збережено:", savedPosition)
+    else
+        warn("Ваш персонаж не знайдений.")
+    end
+end)
+
+-- Увімкнення/вимкнення респавну
+RespawnCheckbox.MouseButton1Click:Connect(function()
+    respawnEnabled = not respawnEnabled
+    RespawnCheckbox.Text = respawnEnabled and "Респавн тут: Увімкнено" or "Респавн тут: Вимкнено"
+end)
+
+-- Логіка респавну
+LocalPlayer.CharacterAdded:Connect(function(character)
+    if respawnEnabled and savedPosition then
+        character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
     end
 end)
