@@ -11,27 +11,25 @@ local TeleportButton = Instance.new("TextButton", MenuFrame)
 local SaveCoordsButton = Instance.new("TextButton", MenuFrame)
 local FixedTeleportButton = Instance.new("TextButton", MenuFrame)
 local RespawnCheckbox = Instance.new("TextButton", MenuFrame)
-local LockPositionCheckbox = Instance.new("TextButton", MenuFrame)
 local CoordinatesLabel = Instance.new("TextLabel", MenuFrame)
 local CloseButton = Instance.new("TextButton", MenuFrame)
 
 -- Змінні
 local savedPosition = nil
 local respawnEnabled = false
-local lockPositionEnabled = false
-local lockedPosition = nil
+local isDraggingMenu = false
+local isDraggingOpenButton = false
 local dragStart, startPos
-local isDraggingMenu = {value = false}
-local isDraggingOpenButton = {value = false}
 
 -- Налаштування меню
-MenuFrame.Size = UDim2.new(0, 300, 0, 300)
-MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -150)
+MenuFrame.Size = UDim2.new(0, 300, 0, 200)
+MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 MenuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MenuFrame.Visible = false
 MenuFrame.BorderSizePixel = 0
 MenuFrame.ClipsDescendants = true
 MenuFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MenuFrame.BackgroundTransparency = 0.2
 
 -- Закруглені кути для меню
 local MenuUICorner = Instance.new("UICorner", MenuFrame)
@@ -39,7 +37,7 @@ MenuUICorner.CornerRadius = UDim.new(0, 10)
 
 -- Кнопка відкриття
 OpenButton.Size = UDim2.new(0, 50, 0, 50)
-OpenButton.Position = UDim2.new(0.5, -25, 0.5, -200)
+OpenButton.Position = UDim2.new(0.5, -25, 0.5, -150)
 OpenButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 OpenButton.Text = "+"
 OpenButton.Visible = true
@@ -54,53 +52,91 @@ CloseButton.Position = UDim2.new(1, -35, 0, 5)
 CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 CloseButton.Text = "X"
 
+-- Кнопка телепорту
+TeleportButton.Size = UDim2.new(0, 250, 0, 30)
+TeleportButton.Position = UDim2.new(0, 25, 0, 50)
+TeleportButton.Text = "Teleport to Player SberKon"
+TeleportButton.BackgroundColor3 = Color3.fromRGB(100, 150, 250)
+
+-- Кнопка збереження координат
+SaveCoordsButton.Size = UDim2.new(0, 250, 0, 30)
+SaveCoordsButton.Position = UDim2.new(0, 25, 0, 90)
+SaveCoordsButton.Text = "Save Current Position"
+SaveCoordsButton.BackgroundColor3 = Color3.fromRGB(100, 250, 150)
+
+-- Галочка для респауну
+RespawnCheckbox.Size = UDim2.new(0, 250, 0, 30)
+RespawnCheckbox.Position = UDim2.new(0, 25, 0, 130)
+RespawnCheckbox.Text = "Enable Respawn at Saved Position: OFF"
+RespawnCheckbox.BackgroundColor3 = Color3.fromRGB(250, 200, 100)
+
+-- Телепорт на задані координати
+FixedTeleportButton.Size = UDim2.new(0, 250, 0, 30)
+FixedTeleportButton.Position = UDim2.new(0, 25, 0, 170)
+FixedTeleportButton.Text = "Teleport to Fixed Coordinates"
+FixedTeleportButton.BackgroundColor3 = Color3.fromRGB(200, 100, 250)
+
 -- Лейбл для координат
-CoordinatesLabel.Size = UDim2.new(1, -10, 0, 30)
-CoordinatesLabel.Position = UDim2.new(0, 5, 0, 10)
+CoordinatesLabel.Size = UDim2.new(0, 250, 0, 30)
+CoordinatesLabel.Position = UDim2.new(0, 25, 0, 10)
+CoordinatesLabel.Text = "Current Coordinates: N/A"
 CoordinatesLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 CoordinatesLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-CoordinatesLabel.Text = "Current Coordinates: Updating..."
 
--- Кнопки
-local buttons = {
-    {TeleportButton, "Teleport to Player SberKon", Color3.fromRGB(100, 150, 250)},
-    {SaveCoordsButton, "Save Current Position", Color3.fromRGB(100, 250, 150)},
-    {RespawnCheckbox, "Enable Respawn at Saved Position: OFF", Color3.fromRGB(250, 200, 100)},
-    {FixedTeleportButton, "Teleport to Fixed Coordinates", Color3.fromRGB(200, 100, 250)},
-    {LockPositionCheckbox, "Lock Current Position: OFF", Color3.fromRGB(255, 150, 150)}
-}
-
-for i, data in ipairs(buttons) do
-    local button, text, color = unpack(data)
-    button.Size = UDim2.new(1, -20, 0, 30)
-    button.Position = UDim2.new(0, 10, 0, 50 + (i - 1) * 40)
-    button.BackgroundColor3 = color
-    button.Text = text
-    button.Parent = MenuFrame
-end
-
--- Оновлення координат
-RunService.RenderStepped:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local position = LocalPlayer.Character.HumanoidRootPart.Position
-        CoordinatesLabel.Text = string.format("Current Coordinates: X: %.2f, Y: %.2f, Z: %.2f", position.X, position.Y, position.Z)
-        if lockPositionEnabled and lockedPosition then
-            LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(lockedPosition)
-        end
-    else
-        CoordinatesLabel.Text = "Current Coordinates: N/A"
-    end
-end)
-
--- Відкриття та закриття меню
+-- Логіка відкриття меню
 OpenButton.MouseButton1Click:Connect(function()
     MenuFrame.Visible = true
     OpenButton.Visible = false
 end)
 
+-- Логіка закриття меню
 CloseButton.MouseButton1Click:Connect(function()
     MenuFrame.Visible = false
     OpenButton.Visible = true
+end)
+
+-- Переміщення меню
+MenuFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDraggingMenu = true
+        dragStart = input.Position
+        startPos = MenuFrame.Position
+    end
+end)
+
+MenuFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDraggingMenu = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if isDraggingMenu and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        MenuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+-- Переміщення кнопки відкриття
+OpenButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDraggingOpenButton = true
+        dragStart = input.Position
+        startPos = OpenButton.Position
+    end
+end)
+
+OpenButton.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDraggingOpenButton = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if isDraggingOpenButton and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        OpenButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
 end)
 
 -- Телепорт до гравця
@@ -115,15 +151,17 @@ end)
 SaveCoordsButton.MouseButton1Click:Connect(function()
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
+        CoordinatesLabel.Text = "Current Coordinates: " .. tostring(savedPosition)
     end
 end)
 
--- Респаун
+-- Увімкнення/вимкнення респауну
 RespawnCheckbox.MouseButton1Click:Connect(function()
     respawnEnabled = not respawnEnabled
     RespawnCheckbox.Text = "Enable Respawn at Saved Position: " .. (respawnEnabled and "ON" or "OFF")
 end)
 
+-- Автоматичний респаун
 LocalPlayer.CharacterAdded:Connect(function(character)
     if respawnEnabled and savedPosition then
         character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
@@ -134,49 +172,3 @@ end)
 FixedTeleportButton.MouseButton1Click:Connect(function()
     LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
 end)
-
--- Фіксація позиції
-LockPositionCheckbox.MouseButton1Click:Connect(function()
-    if not lockPositionEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        lockedPosition = LocalPlayer.Character.HumanoidRootPart.Position
-        lockPositionEnabled = true
-        LockPositionCheckbox.Text = "Lock Current Position: ON"
-    else
-        lockPositionEnabled = false
-        lockedPosition = nil
-        LockPositionCheckbox.Text = "Lock Current Position: OFF"
-    end
-end)
-
--- Перетягування меню
-local function enableDragging(frame, dragFlag)
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragFlag.value = true
-            dragStart = input.Position
-            startPos = frame.Position
-        end
-    end)
-
-    frame.InputChanged:Connect(function(input)
-        if dragFlag.value and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
-        end
-    end)
-
-    frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragFlag.value = false
-        end
-    end)
-end
-
--- Correct initialization of drag flags
-enableDragging(MenuFrame, isDraggingMenu)
-enableDragging(OpenButton, isDraggingOpenButton)
