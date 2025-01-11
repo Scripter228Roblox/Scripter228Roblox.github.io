@@ -21,8 +21,8 @@ local respawnEnabled = false
 local lockPositionEnabled = false
 local lockedPosition = nil
 local dragStart, startPos
-local isDraggingMenu = false
-local isDraggingOpenButton = false
+local isDraggingMenu = {value = false}
+local isDraggingOpenButton = {value = false}
 
 -- Налаштування меню
 MenuFrame.Size = UDim2.new(0, 300, 0, 300)
@@ -152,14 +152,14 @@ end)
 local function enableDragging(frame, dragFlag)
     frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragFlag = true
+            dragFlag.value = true
             dragStart = input.Position
             startPos = frame.Position
         end
     end)
 
     frame.InputChanged:Connect(function(input)
-        if dragFlag and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragFlag.value and input.UserInputType == Enum.UserInputType.MouseMovement then
             local delta = input.Position - dragStart
             frame.Position = UDim2.new(
                 startPos.X.Scale,
@@ -172,7 +172,7 @@ local function enableDragging(frame, dragFlag)
 
     frame.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragFlag = false
+            dragFlag.value = false
         end
     end)
 end
