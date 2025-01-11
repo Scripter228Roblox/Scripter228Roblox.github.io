@@ -20,9 +20,6 @@ local savedPosition = nil
 local respawnEnabled = false
 local lockPositionEnabled = false
 local lockedPosition = nil
-local isDraggingMenu = false
-local isDraggingOpenButton = false
-local dragStart, startPos
 
 -- Налаштування меню
 MenuFrame.Size = UDim2.new(0, 300, 0, 300)
@@ -32,9 +29,7 @@ MenuFrame.Visible = false
 MenuFrame.BorderSizePixel = 0
 MenuFrame.ClipsDescendants = true
 MenuFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MenuFrame.BackgroundTransparency = 0.2
 
--- Закруглені кути для меню
 local MenuUICorner = Instance.new("UICorner", MenuFrame)
 MenuUICorner.CornerRadius = UDim.new(0, 10)
 
@@ -45,7 +40,6 @@ OpenButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 OpenButton.Text = "+"
 OpenButton.Visible = true
 
--- Закруглені кути для кнопки відкриття
 local OpenButtonUICorner = Instance.new("UICorner", OpenButton)
 OpenButtonUICorner.CornerRadius = UDim.new(0, 25)
 
@@ -54,6 +48,7 @@ CloseButton.Size = UDim2.new(0, 30, 0, 30)
 CloseButton.Position = UDim2.new(1, -35, 0, 5)
 CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 CloseButton.Text = "X"
+CloseButton.Parent = MenuFrame
 
 -- Лейбл для координат
 CoordinatesLabel.Size = UDim2.new(1, -10, 0, 30)
@@ -61,8 +56,9 @@ CoordinatesLabel.Position = UDim2.new(0, 5, 0, 10)
 CoordinatesLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 CoordinatesLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 CoordinatesLabel.Text = "Current Coordinates: Updating..."
+CoordinatesLabel.Parent = MenuFrame
 
--- Кнопки
+-- Додаткові кнопки
 local buttons = {
     {TeleportButton, "Teleport to Player SberKon", Color3.fromRGB(100, 150, 250)},
     {SaveCoordsButton, "Save Current Position", Color3.fromRGB(100, 250, 150)},
@@ -80,7 +76,7 @@ for i, data in ipairs(buttons) do
     button.Parent = MenuFrame
 end
 
--- Додати функцію перетягування
+-- Перетягування елементів
 local function makeDraggable(frame)
     local isDragging = false
     local dragStart, startPos
@@ -111,17 +107,61 @@ local function makeDraggable(frame)
     end)
 end
 
--- Робимо меню і кнопку відкриття рухомими
 makeDraggable(MenuFrame)
 makeDraggable(OpenButton)
 
--- Логіка відкриття меню
+-- Функції кнопок
+TeleportButton.MouseButton1Click:Connect(function()
+    local target = Players:FindFirstChild("SberKon")
+    if target then
+        LocalPlayer.Character:MoveTo(target.Character.HumanoidRootPart.Position)
+    end
+end)
+
+SaveCoordsButton.MouseButton1Click:Connect(function()
+    savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
+end)
+
+RespawnCheckbox.MouseButton1Click:Connect(function()
+    respawnEnabled = not respawnEnabled
+    RespawnCheckbox.Text = "Enable Respawn at Saved Position: " .. (respawnEnabled and "ON" or "OFF")
+end)
+
+FixedTeleportButton.MouseButton1Click:Connect(function()
+    LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
+end)
+
+LockPositionCheckbox.MouseButton1Click:Connect(function()
+    lockPositionEnabled = not lockPositionEnabled
+    lockedPosition = lockPositionEnabled and LocalPlayer.Character.HumanoidRootPart.Position or nil
+    LockPositionCheckbox.Text = "Lock Current Position: " .. (lockPositionEnabled and "ON" or "OFF")
+end)
+
+-- Оновлення координат
+RunService.RenderStepped:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local currentPosition = LocalPlayer.Character.HumanoidRootPart.Position
+        CoordinatesLabel.Text = string.format("Current Coordinates: X=%.1f, Y=%.1f, Z=%.1f", currentPosition.X, currentPosition.Y, currentPosition.Z)
+
+        if lockPositionEnabled then
+            LocalPlayer.Character.HumanoidRootPart.Position = lockedPosition
+        end
+    end
+end)
+
+-- Респаун
+LocalPlayer.CharacterAdded:Connect(function(character)
+    if respawnEnabled and savedPosition then
+        character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
+    end
+end)
+
+-- Логіка відкриття і закриття меню
 OpenButton.MouseButton1Click:Connect(function()
     MenuFrame.Visible = true
     OpenButton.Visible = false
 end)
 
--- Логіка закриття меню
 CloseButton.MouseButton1Click:Connect(function()
     MenuFrame.Visible = false
     OpenButton.Visible = true
