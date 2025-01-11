@@ -11,21 +11,22 @@ local TeleportButton = Instance.new("TextButton", MenuFrame)
 local SaveCoordsButton = Instance.new("TextButton", MenuFrame)
 local FixedTeleportButton = Instance.new("TextButton", MenuFrame)
 local RespawnCheckbox = Instance.new("TextButton", MenuFrame)
-local FixedTeleportCheckbox = Instance.new("TextButton", MenuFrame) -- New checkbox for fixed teleport
+local FixPositionButton = Instance.new("TextButton", MenuFrame) -- Кнопка фіксації позиції
 local CoordinatesLabel = Instance.new("TextLabel", MenuFrame)
 local CloseButton = Instance.new("TextButton", MenuFrame)
 
 -- Змінні
 local savedPosition = nil
 local respawnEnabled = false
-local fixedTeleportEnabled = false -- Variable to track fixed teleport state
 local isDraggingMenu = false
 local isDraggingOpenButton = false
 local dragStart, startPos
+local fixedPosition = nil
+local isPositionFixed = false
 
 -- Налаштування меню
-MenuFrame.Size = UDim2.new(0, 300, 0, 250) -- Increased height to accommodate the new checkbox
-MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -125) -- Adjusted position slightly
+MenuFrame.Size = UDim2.new(0, 300, 0, 240)
+MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -120)
 MenuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MenuFrame.Visible = false
 MenuFrame.BorderSizePixel = 0
@@ -72,17 +73,17 @@ RespawnCheckbox.Position = UDim2.new(0, 25, 0, 130)
 RespawnCheckbox.Text = "Enable Respawn at Saved Position: OFF"
 RespawnCheckbox.BackgroundColor3 = Color3.fromRGB(250, 200, 100)
 
--- Галочка для фіксованого телепорту
-FixedTeleportCheckbox.Size = UDim2.new(0, 250, 0, 30)
-FixedTeleportCheckbox.Position = UDim2.new(0, 25, 0, 170)
-FixedTeleportCheckbox.Text = "Enable Fixed Teleport: OFF"
-FixedTeleportCheckbox.BackgroundColor3 = Color3.fromRGB(250, 200, 100)
-
--- Телепорт на задані координати
+-- Кнопка телепорту на фіксовані координати
 FixedTeleportButton.Size = UDim2.new(0, 250, 0, 30)
-FixedTeleportButton.Position = UDim2.new(0, 25, 0, 210)
+FixedTeleportButton.Position = UDim2.new(0, 25, 0, 170)
 FixedTeleportButton.Text = "Teleport to Fixed Coordinates"
 FixedTeleportButton.BackgroundColor3 = Color3.fromRGB(200, 100, 250)
+
+-- Кнопка фіксації позиції
+FixPositionButton.Size = UDim2.new(0, 250, 0, 30)
+FixPositionButton.Position = UDim2.new(0, 25, 0, 210)
+FixPositionButton.Text = "Fix Position"
+FixPositionButton.BackgroundColor3 = Color3.fromRGB(250, 150, 100)
 
 -- Лейбл для координат
 CoordinatesLabel.Size = UDim2.new(0, 250, 0, 30)
@@ -103,7 +104,7 @@ CloseButton.MouseButton1Click:Connect(function()
     OpenButton.Visible = true
 end)
 
--- Переміщення меню
+-- Логіка переміщення меню
 MenuFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         isDraggingMenu = true
@@ -122,28 +123,6 @@ UserInputService.InputChanged:Connect(function(input)
     if isDraggingMenu and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         local delta = input.Position - dragStart
         MenuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
--- Переміщення кнопки відкриття
-OpenButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        isDraggingOpenButton = true
-        dragStart = input.Position
-        startPos = OpenButton.Position
-    end
-end)
-
-OpenButton.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        isDraggingOpenButton = false
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if isDraggingOpenButton and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        OpenButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
 
@@ -178,13 +157,27 @@ end)
 
 -- Телепорт на фіксовані координати
 FixedTeleportButton.MouseButton1Click:Connect(function()
-    if fixedTeleportEnabled then
-        LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
+    LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
+end)
+
+-- Логіка фіксації позиції
+FixPositionButton.MouseButton1Click:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        if not isPositionFixed then
+            fixedPosition = LocalPlayer.Character.HumanoidRootPart.Position
+            FixPositionButton.Text = "Position Fixed"
+            isPositionFixed = true
+        else
+            fixedPosition = nil
+            FixPositionButton.Text = "Fix Position"
+            isPositionFixed = false
+        end
     end
 end)
 
--- Увімкнення/вимкнення фіксованого телепорту
-FixedTeleportCheckbox.MouseButton1Click:Connect(function()
-    fixedTeleportEnabled = not fixedTeleportEnabled
-    FixedTeleportCheckbox.Text = "Enable Fixed Teleport: " .. (fixedTeleportEnabled and "ON" or "OFF")
+-- Постійне переміщення персонажа на зафіксовану позицію
+RunService.Heartbeat:Connect(function()
+    if isPositionFixed and fixedPosition and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(fixedPosition)
+    end
 end)
