@@ -80,18 +80,40 @@ for i, data in ipairs(buttons) do
     button.Parent = MenuFrame
 end
 
--- Логіка оновлення координат
-RunService.RenderStepped:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local position = LocalPlayer.Character.HumanoidRootPart.Position
-        CoordinatesLabel.Text = string.format("Current Coordinates: X: %.2f, Y: %.2f, Z: %.2f", position.X, position.Y, position.Z)
-        if lockPositionEnabled and lockedPosition then
-            LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(lockedPosition)
+-- Додати функцію перетягування
+local function makeDraggable(frame)
+    local isDragging = false
+    local dragStart, startPos
+
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            isDragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    isDragging = false
+                end
+            end)
         end
-    else
-        CoordinatesLabel.Text = "Current Coordinates: N/A"
-    end
-end)
+    end)
+
+    frame.InputChanged:Connect(function(input)
+        if isDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+-- Робимо меню і кнопку відкриття рухомими
+makeDraggable(MenuFrame)
+makeDraggable(OpenButton)
 
 -- Логіка відкриття меню
 OpenButton.MouseButton1Click:Connect(function()
@@ -103,50 +125,4 @@ end)
 CloseButton.MouseButton1Click:Connect(function()
     MenuFrame.Visible = false
     OpenButton.Visible = true
-end)
-
--- Телепорт до гравця
-TeleportButton.MouseButton1Click:Connect(function()
-    local targetPlayer = Players:FindFirstChild("SberKon")
-    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        LocalPlayer.Character:MoveTo(targetPlayer.Character.HumanoidRootPart.Position)
-    end
-end)
-
--- Збереження координат
-SaveCoordsButton.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
-    end
-end)
-
--- Увімкнення/вимкнення респауну
-RespawnCheckbox.MouseButton1Click:Connect(function()
-    respawnEnabled = not respawnEnabled
-    RespawnCheckbox.Text = "Enable Respawn at Saved Position: " .. (respawnEnabled and "ON" or "OFF")
-end)
-
--- Автоматичний респаун
-LocalPlayer.CharacterAdded:Connect(function(character)
-    if respawnEnabled and savedPosition then
-        character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
-    end
-end)
-
--- Телепорт на фіксовані координати
-FixedTeleportButton.MouseButton1Click:Connect(function()
-    LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
-end)
-
--- Увімкнення/вимкнення фіксації позиції
-LockPositionCheckbox.MouseButton1Click:Connect(function()
-    if not lockPositionEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        lockedPosition = LocalPlayer.Character.HumanoidRootPart.Position
-        lockPositionEnabled = true
-        LockPositionCheckbox.Text = "Lock Current Position: ON"
-    else
-        lockPositionEnabled = false
-        lockedPosition = nil
-        LockPositionCheckbox.Text = "Lock Current Position: OFF"
-    end
 end)
