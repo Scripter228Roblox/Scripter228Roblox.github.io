@@ -148,10 +148,10 @@ LockPositionCheckbox.MouseButton1Click:Connect(function()
     end
 end)
 
--- Перетягування меню
+-- Перетягування меню (ПК + мобільні)
 local function enableDragging(frame, dragFlag)
     frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragFlag = true
             dragStart = input.Position
             startPos = frame.Position
@@ -159,7 +159,7 @@ local function enableDragging(frame, dragFlag)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if dragFlag and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragFlag and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local delta = input.Position - dragStart
             frame.Position = UDim2.new(
                 startPos.X.Scale,
@@ -171,7 +171,7 @@ local function enableDragging(frame, dragFlag)
     end)
 
     frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragFlag = false
         end
     end)
@@ -179,3 +179,9 @@ end
 
 enableDragging(MenuFrame, isDraggingMenu)
 enableDragging(OpenButton, isDraggingOpenButton)
+
+-- Адаптація для мобільних пристроїв
+if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
+    MenuFrame.Size = UDim2.new(0, 250, 0, 250)
+    OpenButton.Position = UDim2.new(0.5, -25, 0.9, -70)
+end
