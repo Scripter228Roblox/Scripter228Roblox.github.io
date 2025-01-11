@@ -21,8 +21,8 @@ local respawnEnabled = false
 local lockPositionEnabled = false
 local lockedPosition = nil
 local dragStart, startPos
-local isDraggingMenu = {value = false}
-local isDraggingOpenButton = {value = false}
+local isDraggingMenu = false
+local isDraggingOpenButton = false
 
 -- Menu settings
 MenuFrame.Size = UDim2.new(0, 300, 0, 300)
@@ -148,46 +148,56 @@ LockPositionCheckbox.MouseButton1Click:Connect(function()
     end
 end)
 
--- Dragging logic
-local function enableDragging(frame, dragFlag)
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragFlag.value = true
-            dragStart = input.Position
-            startPos = frame.Position
-        end
-    end)
-
-    frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragFlag.value = false
-        end
-    end)
-end
-
--- Connect InputChanged once
-UserInputService.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        if isDraggingMenu.value then
-            local delta = input.Position - dragStart
-            MenuFrame.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
-        elseif isDraggingOpenButton.value then
-            local delta = input.Position - dragStart
-            OpenButton.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
-        end
+-- Dragging logic for MenuFrame
+MenuFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDraggingMenu = true
+        dragStart = input.Position
+        startPos = MenuFrame.Position
     end
 end)
 
--- Initialize dragging
-enableDragging(MenuFrame, isDraggingMenu)
-enableDragging(OpenButton, isDraggingOpenButton)
+MenuFrame.InputChanged:Connect(function(input)
+    if isDraggingMenu and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        MenuFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+MenuFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDraggingMenu = false
+    end
+end)
+
+-- Dragging logic for OpenButton
+OpenButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDraggingOpenButton = true
+        dragStart = input.Position
+        startPos = OpenButton.Position
+    end
+end)
+
+OpenButton.InputChanged:Connect(function(input)
+    if isDraggingOpenButton and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        OpenButton.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+OpenButton.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDraggingOpenButton = false
+    end
+end)
