@@ -1,28 +1,34 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
--- Функція для заміни вигляду на стандартний
-local function setDefaultAppearance()
-    -- Видаляємо всі кастомні частини
-    for _, item in pairs(character:GetChildren()) do
-        if item:IsA("Accessory") or item:IsA("BasePart") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("CharacterMesh") then
-            item:Destroy()
-        end
+-- Функція для перевірки та відновлення стандартного вигляду
+local function restoreAppearance()
+    -- Переконуємося, що персонаж існує
+    if not character or not character:FindFirstChildOfClass("Humanoid") then
+        return
     end
 
-    -- Створюємо стандартну модельку гравця
+    -- Отримуємо Humanoid
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if humanoid then
-        humanoid:ApplyDescription(game.Players:GetHumanoidDescriptionFromUserId(player.UserId))
+        -- Застосовуємо стандартний вигляд гравця
+        local success, err = pcall(function()
+            humanoid:ApplyDescription(game.Players:GetHumanoidDescriptionFromUserId(player.UserId))
+        end)
+
+        -- Лог для налагодження
+        if not success then
+            warn("Помилка застосування стандартного вигляду: " .. err)
+        end
     end
 end
 
--- Виклик функції, коли персонаж завантажується
+-- Відновлення вигляду при завантаженні персонажа
 if character then
-    setDefaultAppearance()
+    restoreAppearance()
 end
 
 player.CharacterAdded:Connect(function(newCharacter)
     character = newCharacter
-    setDefaultAppearance()
+    restoreAppearance()
 end)
