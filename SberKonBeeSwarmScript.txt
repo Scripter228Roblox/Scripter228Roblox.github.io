@@ -1,21 +1,32 @@
-local Players = game:GetService("Players")
+local Players = game:GetService(“Players”)
 local LocalPlayer = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local UserInputService = game:GetService(“UserInputService”)
+local RunService = game:GetService(“RunService”)
 
--- GUI
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-local MenuFrame = Instance.new("Frame", ScreenGui)
-local OpenButton = Instance.new("TextButton", ScreenGui)
-local TeleportButton = Instance.new("TextButton", MenuFrame)
-local SaveCoordsButton = Instance.new("TextButton", MenuFrame)
-local FixedTeleportButton = Instance.new("TextButton", MenuFrame)
-local RespawnCheckbox = Instance.new("TextButton", MenuFrame)
-local FixPositionButton = Instance.new("TextButton", MenuFrame) -- Кнопка фіксації позиції
-local CoordinatesLabel = Instance.new("TextLabel", MenuFrame)
-local CloseButton = Instance.new("TextButton", MenuFrame)
+– GUI
+local ScreenGui = Instance.new(“ScreenGui”, game.CoreGui)
+local MenuFrame = Instance.new(“Frame”, ScreenGui)
+local OpenButton = Instance.new(“TextButton”, ScreenGui)
+local TeleportButton = Instance.new(“TextButton”, MenuFrame)
+local SaveCoordsButton = Instance.new(“TextButton”, MenuFrame)
+local FixedTeleportButton = Instance.new(“TextButton”, MenuFrame)
+local RespawnCheckbox = Instance.new(“TextButton”, MenuFrame)
+local FixPositionButton = Instance.new(“TextButton”, MenuFrame)
+local CoordinatesLabel = Instance.new(“TextLabel”, MenuFrame)
+local CloseButton = Instance.new(“TextButton”, MenuFrame)
 
--- Змінні
+– Нові елементи для координат
+local CoordsListFrame = Instance.new(“ScrollingFrame”, MenuFrame)
+local AddCoordsButton = Instance.new(“TextButton”, MenuFrame)
+local CoordsInputFrame = Instance.new(“Frame”, MenuFrame)
+local XInput = Instance.new(“TextBox”, CoordsInputFrame)
+local YInput = Instance.new(“TextBox”, CoordsInputFrame)
+local ZInput = Instance.new(“TextBox”, CoordsInputFrame)
+local NameInput = Instance.new(“TextBox”, CoordsInputFrame)
+local SaveNewCoordsButton = Instance.new(“TextButton”, CoordsInputFrame)
+local CancelButton = Instance.new(“TextButton”, CoordsInputFrame)
+
+– Змінні
 local savedPosition = nil
 local respawnEnabled = false
 local isDraggingMenu = false
@@ -23,10 +34,12 @@ local isDraggingOpenButton = false
 local dragStart, startPos
 local fixedPosition = nil
 local isPositionFixed = false
+local savedCoordinates = {} – Таблиця для збереження координат
+local showingCoordsInput = false
 
--- Налаштування меню
-MenuFrame.Size = UDim2.new(0, 300, 0, 240)
-MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -120)
+– Налаштування меню (збільшуємо висоту)
+MenuFrame.Size = UDim2.new(0, 350, 0, 400)
+MenuFrame.Position = UDim2.new(0.5, -175, 0.5, -200)
 MenuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MenuFrame.Visible = false
 MenuFrame.BorderSizePixel = 0
@@ -34,150 +47,301 @@ MenuFrame.ClipsDescendants = true
 MenuFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MenuFrame.BackgroundTransparency = 0.2
 
--- Закруглені кути для меню
-local MenuUICorner = Instance.new("UICorner", MenuFrame)
+– Закруглені кути для меню
+local MenuUICorner = Instance.new(“UICorner”, MenuFrame)
 MenuUICorner.CornerRadius = UDim.new(0, 10)
 
--- Кнопка відкриття
+– Кнопка відкриття
 OpenButton.Size = UDim2.new(0, 50, 0, 50)
 OpenButton.Position = UDim2.new(0.5, -25, 0.5, -150)
 OpenButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-OpenButton.Text = "+"
+OpenButton.Text = “+”
 OpenButton.Visible = true
 
--- Закруглені кути для кнопки відкриття
-local OpenButtonUICorner = Instance.new("UICorner", OpenButton)
+– Закруглені кути для кнопки відкриття
+local OpenButtonUICorner = Instance.new(“UICorner”, OpenButton)
 OpenButtonUICorner.CornerRadius = UDim.new(0, 25)
 
--- Кнопка закриття
+– Кнопка закриття
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
 CloseButton.Position = UDim2.new(1, -35, 0, 5)
 CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-CloseButton.Text = "X"
+CloseButton.Text = “X”
 
--- Кнопка телепорту
-TeleportButton.Size = UDim2.new(0, 250, 0, 30)
+– Кнопка телепорту
+TeleportButton.Size = UDim2.new(0, 300, 0, 30)
 TeleportButton.Position = UDim2.new(0, 25, 0, 50)
-TeleportButton.Text = "Teleport to Player SberKon"
+TeleportButton.Text = “Teleport to Player SberKon”
 TeleportButton.BackgroundColor3 = Color3.fromRGB(100, 150, 250)
 
--- Кнопка збереження координат
-SaveCoordsButton.Size = UDim2.new(0, 250, 0, 30)
+– Кнопка збереження координат
+SaveCoordsButton.Size = UDim2.new(0, 300, 0, 30)
 SaveCoordsButton.Position = UDim2.new(0, 25, 0, 90)
-SaveCoordsButton.Text = "Save Current Position"
+SaveCoordsButton.Text = “Save Current Position”
 SaveCoordsButton.BackgroundColor3 = Color3.fromRGB(100, 250, 150)
 
--- Галочка для респауну
-RespawnCheckbox.Size = UDim2.new(0, 250, 0, 30)
+– Галочка для респауну
+RespawnCheckbox.Size = UDim2.new(0, 300, 0, 30)
 RespawnCheckbox.Position = UDim2.new(0, 25, 0, 130)
-RespawnCheckbox.Text = "Enable Respawn at Saved Position: OFF"
+RespawnCheckbox.Text = “Enable Respawn at Saved Position: OFF”
 RespawnCheckbox.BackgroundColor3 = Color3.fromRGB(250, 200, 100)
 
--- Кнопка телепорту на фіксовані координати
-FixedTeleportButton.Size = UDim2.new(0, 250, 0, 30)
+– Кнопка телепорту на фіксовані координати
+FixedTeleportButton.Size = UDim2.new(0, 300, 0, 30)
 FixedTeleportButton.Position = UDim2.new(0, 25, 0, 170)
-FixedTeleportButton.Text = "Teleport to Fixed Coordinates"
+FixedTeleportButton.Text = “Teleport to Fixed Coordinates”
 FixedTeleportButton.BackgroundColor3 = Color3.fromRGB(200, 100, 250)
 
--- Кнопка фіксації позиції
-FixPositionButton.Size = UDim2.new(0, 250, 0, 30)
+– Кнопка фіксації позиції
+FixPositionButton.Size = UDim2.new(0, 300, 0, 30)
 FixPositionButton.Position = UDim2.new(0, 25, 0, 210)
-FixPositionButton.Text = "Fix Position"
+FixPositionButton.Text = “Fix Position”
 FixPositionButton.BackgroundColor3 = Color3.fromRGB(250, 150, 100)
 
--- Лейбл для координат
-CoordinatesLabel.Size = UDim2.new(0, 250, 0, 30)
+– Кнопка додавання координат
+AddCoordsButton.Size = UDim2.new(0, 300, 0, 30)
+AddCoordsButton.Position = UDim2.new(0, 25, 0, 250)
+AddCoordsButton.Text = “Add Custom Coordinates”
+AddCoordsButton.BackgroundColor3 = Color3.fromRGB(150, 200, 150)
+
+– Лейбл для координат
+CoordinatesLabel.Size = UDim2.new(0, 300, 0, 30)
 CoordinatesLabel.Position = UDim2.new(0, 25, 0, 10)
-CoordinatesLabel.Text = "Current Coordinates: N/A"
+CoordinatesLabel.Text = “Current Coordinates: N/A”
 CoordinatesLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 CoordinatesLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 
--- Логіка відкриття меню
+– Список збережених координат
+CoordsListFrame.Size = UDim2.new(0, 300, 0, 100)
+CoordsListFrame.Position = UDim2.new(0, 25, 0, 290)
+CoordsListFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+CoordsListFrame.ScrollBarThickness = 8
+CoordsListFrame.Visible = true
+
+– Фрейм для введення координат
+CoordsInputFrame.Size = UDim2.new(0, 300, 0, 150)
+CoordsInputFrame.Position = UDim2.new(0, 25, 0, 240)
+CoordsInputFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+CoordsInputFrame.Visible = false
+
+– Поля введення
+NameInput.Size = UDim2.new(0, 280, 0, 25)
+NameInput.Position = UDim2.new(0, 10, 0, 10)
+NameInput.PlaceholderText = “Назва координат”
+NameInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+XInput.Size = UDim2.new(0, 90, 0, 25)
+XInput.Position = UDim2.new(0, 10, 0, 45)
+XInput.PlaceholderText = “X”
+XInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+YInput.Size = UDim2.new(0, 90, 0, 25)
+YInput.Position = UDim2.new(0, 105, 0, 45)
+YInput.PlaceholderText = “Y”
+YInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+ZInput.Size = UDim2.new(0, 90, 0, 25)
+ZInput.Position = UDim2.new(0, 200, 0, 45)
+ZInput.PlaceholderText = “Z”
+ZInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+SaveNewCoordsButton.Size = UDim2.new(0, 135, 0, 30)
+SaveNewCoordsButton.Position = UDim2.new(0, 10, 0, 80)
+SaveNewCoordsButton.Text = “Зберегти”
+SaveNewCoordsButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+
+CancelButton.Size = UDim2.new(0, 135, 0, 30)
+CancelButton.Position = UDim2.new(0, 155, 0, 80)
+CancelButton.Text = “Скасувати”
+CancelButton.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
+
+– Функція оновлення списку координат
+local function updateCoordsList()
+for i, child in pairs(CoordsListFrame:GetChildren()) do
+if child:IsA(“TextButton”) then
+child:Destroy()
+end
+end
+
+```
+for i, coord in pairs(savedCoordinates) do
+    local coordButton = Instance.new("TextButton", CoordsListFrame)
+    coordButton.Size = UDim2.new(0, 280, 0, 25)
+    coordButton.Position = UDim2.new(0, 10, 0, (i-1) * 30)
+    coordButton.Text = coord.name .. " (" .. coord.x .. ", " .. coord.y .. ", " .. coord.z .. ")"
+    coordButton.BackgroundColor3 = Color3.fromRGB(100, 100, 200)
+    coordButton.TextScaled = true
+    
+    -- Телепорт на координати
+    coordButton.MouseButton1Click:Connect(function()
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            LocalPlayer.Character:MoveTo(Vector3.new(coord.x, coord.y, coord.z))
+        end
+    end)
+    
+    -- Видалення координат (правий клік)
+    coordButton.MouseButton2Click:Connect(function()
+        table.remove(savedCoordinates, i)
+        updateCoordsList()
+    end)
+end
+
+CoordsListFrame.CanvasSize = UDim2.new(0, 0, 0, #savedCoordinates * 30)
+```
+
+end
+
+– Логіка відкриття меню
 OpenButton.MouseButton1Click:Connect(function()
-    MenuFrame.Visible = true
-    OpenButton.Visible = false
+MenuFrame.Visible = true
+OpenButton.Visible = false
 end)
 
--- Логіка закриття меню
+– Логіка закриття меню
 CloseButton.MouseButton1Click:Connect(function()
-    MenuFrame.Visible = false
-    OpenButton.Visible = true
+MenuFrame.Visible = false
+OpenButton.Visible = true
+CoordsInputFrame.Visible = false
+showingCoordsInput = false
 end)
 
--- Логіка переміщення меню
+– Додавання координат
+AddCoordsButton.MouseButton1Click:Connect(function()
+showingCoordsInput = not showingCoordsInput
+CoordsInputFrame.Visible = showingCoordsInput
+
+```
+if showingCoordsInput and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+    local pos = LocalPlayer.Character.HumanoidRootPart.Position
+    XInput.Text = tostring(math.floor(pos.X * 10) / 10)
+    YInput.Text = tostring(math.floor(pos.Y * 10) / 10)
+    ZInput.Text = tostring(math.floor(pos.Z * 10) / 10)
+end
+```
+
+end)
+
+– Збереження нових координат
+SaveNewCoordsButton.MouseButton1Click:Connect(function()
+local name = NameInput.Text
+local x = tonumber(XInput.Text)
+local y = tonumber(YInput.Text)
+local z = tonumber(ZInput.Text)
+
+```
+if name ~= "" and x and y and z then
+    table.insert(savedCoordinates, {
+        name = name,
+        x = x,
+        y = y,
+        z = z
+    })
+    
+    NameInput.Text = ""
+    XInput.Text = ""
+    YInput.Text = ""
+    ZInput.Text = ""
+    
+    CoordsInputFrame.Visible = false
+    showingCoordsInput = false
+    
+    updateCoordsList()
+end
+```
+
+end)
+
+– Скасування введення
+CancelButton.MouseButton1Click:Connect(function()
+CoordsInputFrame.Visible = false
+showingCoordsInput = false
+NameInput.Text = “”
+XInput.Text = “”
+YInput.Text = “”
+ZInput.Text = “”
+end)
+
+– Оновлення координат в реальному часі
+RunService.Heartbeat:Connect(function()
+if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(“HumanoidRootPart”) then
+local pos = LocalPlayer.Character.HumanoidRootPart.Position
+CoordinatesLabel.Text = “Current: X:” .. math.floor(pos.X*10)/10 .. “ Y:” .. math.floor(pos.Y*10)/10 .. “ Z:” .. math.floor(pos.Z*10)/10
+end
+
+```
+if isPositionFixed and fixedPosition and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(fixedPosition)
+end
+```
+
+end)
+
+– Логіка переміщення меню
 MenuFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        isDraggingMenu = true
-        dragStart = input.Position
-        startPos = MenuFrame.Position
-    end
+if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+isDraggingMenu = true
+dragStart = input.Position
+startPos = MenuFrame.Position
+end
 end)
 
 MenuFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        isDraggingMenu = false
-    end
+if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+isDraggingMenu = false
+end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if isDraggingMenu and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        MenuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
+if isDraggingMenu and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+local delta = input.Position - dragStart
+MenuFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
 end)
 
--- Телепорт до гравця
+– Телепорт до гравця
 TeleportButton.MouseButton1Click:Connect(function()
-    local targetPlayer = Players:FindFirstChild("SberKon")
-    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        LocalPlayer.Character:MoveTo(targetPlayer.Character.HumanoidRootPart.Position)
-    end
+local targetPlayer = Players:FindFirstChild(“SberKon”)
+if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild(“HumanoidRootPart”) then
+LocalPlayer.Character:MoveTo(targetPlayer.Character.HumanoidRootPart.Position)
+end
 end)
 
--- Збереження координат
+– Збереження координат
 SaveCoordsButton.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
-        CoordinatesLabel.Text = "Current Coordinates: " .. tostring(savedPosition)
-    end
+if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(“HumanoidRootPart”) then
+savedPosition = LocalPlayer.Character.HumanoidRootPart.Position
+end
 end)
 
--- Увімкнення/вимкнення респауну
+– Увімкнення/вимкнення респауну
 RespawnCheckbox.MouseButton1Click:Connect(function()
-    respawnEnabled = not respawnEnabled
-    RespawnCheckbox.Text = "Enable Respawn at Saved Position: " .. (respawnEnabled and "ON" or "OFF")
+respawnEnabled = not respawnEnabled
+RespawnCheckbox.Text = “Enable Respawn at Saved Position: “ .. (respawnEnabled and “ON” or “OFF”)
 end)
 
--- Автоматичний респаун
+– Автоматичний респаун
 LocalPlayer.CharacterAdded:Connect(function(character)
-    if respawnEnabled and savedPosition then
-        character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
-    end
+if respawnEnabled and savedPosition then
+character:WaitForChild(“HumanoidRootPart”).CFrame = CFrame.new(savedPosition)
+end
 end)
 
--- Телепорт на фіксовані координати
+– Телепорт на фіксовані координати
 FixedTeleportButton.MouseButton1Click:Connect(function()
-    LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
+LocalPlayer.Character:MoveTo(Vector3.new(-150.1, 439.5, -359.7))
 end)
 
--- Логіка фіксації позиції
+– Логіка фіксації позиції
 FixPositionButton.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        if not isPositionFixed then
-            fixedPosition = LocalPlayer.Character.HumanoidRootPart.Position
-            FixPositionButton.Text = "Position Fixed"
-            isPositionFixed = true
-        else
-            fixedPosition = nil
-            FixPositionButton.Text = "Fix Position"
-            isPositionFixed = false
-        end
-    end
-end)
-
--- Постійне переміщення персонажа на зафіксовану позицію
-RunService.Heartbeat:Connect(function()
-    if isPositionFixed and fixedPosition and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(fixedPosition)
-    end
+if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(“HumanoidRootPart”) then
+if not isPositionFixed then
+fixedPosition = LocalPlayer.Character.HumanoidRootPart.Position
+FixPositionButton.Text = “Position Fixed”
+isPositionFixed = true
+else
+fixedPosition = nil
+FixPositionButton.Text = “Fix Position”
+isPositionFixed = false
+end
+end
 end)
